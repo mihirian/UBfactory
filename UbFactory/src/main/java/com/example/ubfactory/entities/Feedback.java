@@ -1,8 +1,6 @@
 package com.example.ubfactory.entities;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "feedback")
