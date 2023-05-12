@@ -1,5 +1,7 @@
 package com.example.ubfactory.entities;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -7,6 +9,7 @@ import javax.persistence.Table;
 import java.util.Set;
 
 @Entity
+@Data
 @Table(name = "categories")
 public class Category extends BaseEntity {
 

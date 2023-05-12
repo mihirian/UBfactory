@@ -1,7 +1,9 @@
 package com.example.ubfactory.controller;
 
 import com.example.ubfactory.entities.Product;
+import com.example.ubfactory.objects.ProductObject;
 import com.example.ubfactory.service.ProductService;
+import com.example.ubfactory.service.serviceimpl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +18,15 @@ import java.util.Date;
 @RequestMapping("/product")
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product){
-        Product createdProduct = productService.saveProduct(product);
+    public ResponseEntity<ProductObject> createProduct(@RequestBody ProductObject product){
+        ProductObject createdProduct = productService.createProduct(product);
         return new  ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
