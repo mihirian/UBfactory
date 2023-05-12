@@ -21,15 +21,15 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
-
     @Override
     public Product saveProduct(Product product) {
-        product.setCreatedAt(new Date());
-        product.setUpdatedAt(new Date());
-        Category cat =new Category();
-        cat.setId(1);
-        product.setCategory(cat);
-        return productRepository.save(product);
+//        product.setCreatedAt(new Date());
+//        product.setUpdatedAt(new Date());
+//        Category cat =new Category();
+//        cat.setId(1);
+//        product.setCategory(cat);
+//        return productRepository.save(product);
+        return null;
     }
 
     @Override
