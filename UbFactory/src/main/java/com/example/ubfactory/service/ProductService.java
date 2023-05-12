@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface ProductService {
 
-    public Product saveProduct(Product product);
-
-    public Product productFindById(Integer id);
-
-    public List<Product> findAllProducts();
+//    public Product saveProduct(Product product);
+//
+//    public Product productFindById(Integer id);
+//
+//    public List<Product> findAllProducts();
 
 }

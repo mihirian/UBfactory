@@ -2,6 +2,9 @@ package com.example.ubfactory.service.serviceimpl;
 
 import com.example.ubfactory.entities.Category;
 import com.example.ubfactory.entities.Product;
+import com.example.ubfactory.helper.ProductHelper;
+import com.example.ubfactory.objects.ProductObject;
+import com.example.ubfactory.repository.CategoryRepository;
 import com.example.ubfactory.repository.ProductRepository;
 import com.example.ubfactory.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,32 +15,27 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class ProductServiceImpl implements ProductService {
-
-    private final ProductRepository productRepository;
+public class ProductServiceImpl {
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    private ProductHelper productHelper;
+
+    public ProductObject createProduct(ProductObject productObject) {
+
+
+        Category category = productHelper.getCategoryEntity(productObject);
+
+        Product product = productHelper.getProductEntity(productObject,category);
+
+        productObject.setCategoryName(category.getName());
+
+        return productObject;
     }
 
-    @Override
-    public Product saveProduct(Product product) {
-//        product.setCreatedAt(new Date());
-//        product.setUpdatedAt(new Date());
-//        Category cat =new Category();
-//        cat.setId(1);
-//        product.setCategory(cat);
-//        return productRepository.save(product);
-        return null;
-    }
-
-    @Override
     public Product productFindById(Integer id) {
         return null;
     }
 
-    @Override
     public List<Product> findAllProducts() {
         return null;
     }
