@@ -22,7 +22,6 @@ public class ProductServiceImpl {
 
     public ProductObject createProduct(ProductObject productObject) {
 
-
         Category category = productHelper.getCategoryEntity(productObject);
 
         Product product = productHelper.getProductEntity(productObject,category);
