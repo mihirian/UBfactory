@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Date;
 
 @RestController
@@ -25,7 +26,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductObject> createProduct(@RequestBody ProductObject product){
+    public ResponseEntity<ProductObject> createProduct(@Valid @RequestBody ProductObject product){
         ProductObject createdProduct = productService.createProduct(product);
         return new  ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
