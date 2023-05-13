@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MarqueRepository extends JpaRepository<Marque,Integer> {
+
+    Marque findByMarqueeName(String marqueeName);
 }

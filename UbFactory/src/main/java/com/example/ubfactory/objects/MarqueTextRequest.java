@@ -19,4 +19,5 @@ public class MarqueTextRequest
     private Date startDate;
     private Date endDate;
     private String status;
+    private String marqueeName;
 }
