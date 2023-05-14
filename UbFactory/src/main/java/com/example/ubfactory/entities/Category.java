@@ -25,8 +25,8 @@ public class Category extends BaseEntity {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "category")
-    private Set<Product> products;
+//    @OneToMany(mappedBy = "category")
+//    private Set<Product> products;
 
     // getters and setters
 }

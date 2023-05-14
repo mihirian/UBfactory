@@ -1,6 +1,7 @@
 package com.example.ubfactory.service;
 
 import com.example.ubfactory.entities.Product;
+import com.example.ubfactory.objects.ProductObject;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,10 +9,17 @@ import java.util.List;
 
 public interface ProductService {
 
-//    public Product saveProduct(Product product);
-//
-//    public Product productFindById(Integer id);
-//
-//    public List<Product> findAllProducts();
+    public ProductObject createProduct(ProductObject product);
+
+    public ProductObject getProductByName(String name);
+
+    public List<ProductObject> getAllProducts();
+
+    public List<ProductObject> getAllProductsByCategoryName(String name);
+
+
+    public void deleteProductById(Integer productId);
+
+    ProductObject updateProduct(ProductObject product);
 
 }

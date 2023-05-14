@@ -21,8 +21,11 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @Column(name = "dispaly_name", nullable = false)
+    private String displayName;
 
     @Column(name = "status", nullable = false)
     private String status;

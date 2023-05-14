@@ -7,28 +7,50 @@ import com.example.ubfactory.service.serviceimpl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
 public class ProductController {
 
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
+
     @Autowired
-    public ProductController(ProductServiceImpl productService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @PostMapping
-    public ResponseEntity<ProductObject> createProduct(@Valid @RequestBody ProductObject product){
+    public ResponseEntity<ProductObject> createProduct(@Valid @RequestBody ProductObject product) {
         ProductObject createdProduct = productService.createProduct(product);
-        return new  ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<ProductObject> updateProduct(@Valid @RequestBody ProductObject product) {
+        ProductObject createdProduct = productService.updateProduct(product);
+        return new ResponseEntity<>(createdProduct, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductObject>> getAllProducts() {
+        List<ProductObject> productObjectList = productService.getAllProducts();
+        return new ResponseEntity<>(productObjectList, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/get/all/{category}")
+    public ResponseEntity<List<ProductObject>> getAllProductsByCategory(@PathVariable String category) {
+        List<ProductObject> productObjectList = productService.getAllProductsByCategoryName(category);
+        return new ResponseEntity<>(productObjectList, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "delete/{productId}")
+    public ResponseEntity<ProductObject> deleteProductById(@PathVariable Integer productId) {
+        productService.deleteProductById(productId);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }
