@@ -6,7 +6,6 @@ import com.example.ubfactory.objects.BannerObject;
 import com.example.ubfactory.repository.BannerRepository;
 import com.example.ubfactory.service.BannerService;
 import com.example.ubfactory.validator.BannerValidator;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
