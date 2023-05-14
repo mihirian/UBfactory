@@ -30,6 +30,8 @@ public class Marque extends BaseEntity {
 
     @Column(name = "status", nullable = false)
     private String status;
+    @Column(name = "marquee_Name", nullable = false)
+    private String marqueeName;
 
     // Getters and Setters
 }

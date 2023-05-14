@@ -32,5 +32,20 @@ public class MarqueTextServiceImp implements MarqueTextService
         marqueTextResponse.setStatus(marqueeText.getStatus());
         return marqueTextResponse;
     }
-}
+    @Override
+    public MarqueTextResponse searchMarqueText(MarqueTextRequest marqueTextRequest) throws BusinessException {
+        MarqueTextRequest request = marqueTextVailidator.validateSearchRequest(marqueTextRequest);
+        Marque marque=marqueRepository.findByMarqueeName(request.getMarqueeName());
+        MarqueTextResponse response=new MarqueTextResponse();
+        if(marque.getStatus().equals("ACTIVE"))
+        {
+            response.setId(Long.valueOf(marque.getId()));
+           response.setMarqueeText(marque.getMarqueText());
+           response.setStatus(marque.getStatus());
+           response.setMarqueeName(marque.getMarqueeName());
+        }
+        return response;
+    }
+
+    }
 

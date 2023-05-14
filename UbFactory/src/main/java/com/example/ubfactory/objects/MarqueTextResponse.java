@@ -14,4 +14,7 @@ public class MarqueTextResponse
     private Long id;
     private  String Status;
 
+    private String marqueeText;
+    private String marqueeName;
+
 }

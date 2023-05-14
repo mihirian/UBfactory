@@ -21,6 +21,7 @@ public class MarqueTextHelper {
         cal.set(Calendar.MILLISECOND, 999);
         marqueeText.setEndDate(cal.getTime());
         marqueeText.setMarqueText(validateRequest.getMarqueText());
+        marqueeText.setMarqueeName(validateRequest.getMarqueeName());
         cal.setTime(validateRequest.getStartDate());
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
