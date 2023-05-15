@@ -37,5 +37,4 @@ public class ProductObject {
 
     private Category category;
 
-
 }
