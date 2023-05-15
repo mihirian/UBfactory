@@ -1,16 +1,13 @@
 package com.example.ubfactory.controller;
 
-import com.example.ubfactory.entities.Product;
 import com.example.ubfactory.objects.ProductObject;
 import com.example.ubfactory.service.ProductService;
-import com.example.ubfactory.service.serviceimpl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.List;
 
 @RestController

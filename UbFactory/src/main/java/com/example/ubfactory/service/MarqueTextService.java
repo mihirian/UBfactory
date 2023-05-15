@@ -6,8 +6,7 @@ import com.example.ubfactory.objects.MarqueTextResponse;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface MarqueTextService 
-{
+public interface MarqueTextService {
 
     MarqueTextResponse addMarqueText(MarqueTextRequest marqueTextRequest) throws BusinessException;
 

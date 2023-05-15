@@ -1,6 +1,5 @@
 package com.example.ubfactory.controller;
 
-import com.example.ubfactory.entities.Product;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.BannerObject;
 import com.example.ubfactory.objects.GenricResponse;
@@ -12,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/banner")

@@ -1,7 +1,6 @@
 package com.example.ubfactory.exception;
 
-public class BusinessException extends Exception
-{
+public class BusinessException extends Exception {
     private int errorCode;
     private String errorMessage;
 

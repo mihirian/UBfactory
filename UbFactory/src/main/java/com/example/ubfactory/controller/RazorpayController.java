@@ -2,11 +2,10 @@ package com.example.ubfactory.controller;
 
 //import com.razorpay.RazorpayClient;
 //import com.razorpay.RazorpayException;
+
 import com.example.ubfactory.objects.GenricResponse;
 import com.example.ubfactory.objects.RazorpayRequestObject;
 import com.example.ubfactory.service.RazorpayService;
-import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,21 +33,21 @@ public class RazorpayController {
 //        }
 
 
-        @PostMapping("/create-order")
-        public ResponseEntity<?> createOrder(@RequestBody RazorpayRequestObject razorpayRequestObject) {
-            try {
-                RazorpayRequestObject requestObject = razorpayService.createOrder(razorpayRequestObject);
-                return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
-            } catch (Exception e) {
-                return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-            }
-        }
-
-        @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
-        public ResponseEntity<?> handleHttpMediaTypeNotAcceptableException(HttpMediaTypeNotAcceptableException ex) {
-            // Log the exception and return an appropriate response to the client
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid MIME type in 'Accept' header");
+    @PostMapping("/create-order")
+    public ResponseEntity<?> createOrder(@RequestBody RazorpayRequestObject razorpayRequestObject) {
+        try {
+            RazorpayRequestObject requestObject = razorpayService.createOrder(razorpayRequestObject);
+            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
+
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<?> handleHttpMediaTypeNotAcceptableException(HttpMediaTypeNotAcceptableException ex) {
+        // Log the exception and return an appropriate response to the client
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid MIME type in 'Accept' header");
+    }
+}
 
 

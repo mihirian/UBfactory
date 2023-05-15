@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,15 +34,15 @@ public class BannerServiceImpl implements BannerService {
         bannerObject.setUpdateAt(new Date());
         Banner bannerEntity = bannerHelper.bannerObjToEntity(bannerObject);
         bannerRepository.save(bannerEntity);
-       // return bannerHelper.entityToBannerObj(bannerEntity);
+        // return bannerHelper.entityToBannerObj(bannerEntity);
         return null;
     }
 
     @Override
     public List<BannerObject> getBanner() {
-       List<Banner> bannerList = bannerRepository.findBannerListBystartDate(new Date());
+        List<Banner> bannerList = bannerRepository.findBannerListBystartDate(new Date());
         List<BannerObject> responseList = bannerList.stream().map(banner -> {
-            BannerObject bannerObject =new BannerObject();
+            BannerObject bannerObject = new BannerObject();
             bannerObject.setUrl(banner.getUrl());
             bannerObject.setName(banner.getName());
             bannerObject.setStatus(banner.getStatus());

@@ -1,8 +1,6 @@
 package com.example.ubfactory.service;
 
-import com.example.ubfactory.entities.Product;
 import com.example.ubfactory.objects.ProductObject;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

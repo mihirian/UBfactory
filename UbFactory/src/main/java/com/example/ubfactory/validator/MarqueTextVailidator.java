@@ -5,8 +5,7 @@ import com.example.ubfactory.objects.MarqueTextRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MarqueTextVailidator
-{
+public class MarqueTextVailidator {
 
     public MarqueTextRequest validateMarqueTextRequest(MarqueTextRequest marqueTextRequest) throws BusinessException {
         if (marqueTextRequest == null) {
@@ -16,10 +15,10 @@ public class MarqueTextVailidator
             throw new BusinessException(40002, "Invailid end date");
         }
         if (marqueTextRequest.getMarqueText() == null) {
-            throw new BusinessException(6000001,"Please enter MarqueeTex");
+            throw new BusinessException(6000001, "Please enter MarqueeTex");
         }
         if (marqueTextRequest.getStartDate() == null) {
-            throw new BusinessException(40001,"Invailid start date");
+            throw new BusinessException(40001, "Invailid start date");
         }
 
         return marqueTextRequest;
@@ -34,5 +33,5 @@ public class MarqueTextVailidator
 //        }
         return marqueTextRequest;
     }
-    }
+}
 

@@ -3,8 +3,7 @@ package com.example.ubfactory.objects;
 import lombok.Data;
 
 @Data
-public class CustomerRequest
-{
+public class CustomerRequest {
     protected Integer id;
     private String firstName;
     private String lastName;

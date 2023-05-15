@@ -4,14 +4,10 @@ import com.example.ubfactory.entities.Category;
 import com.example.ubfactory.entities.Product;
 import com.example.ubfactory.helper.ProductHelper;
 import com.example.ubfactory.objects.ProductObject;
-import com.example.ubfactory.repository.CategoryRepository;
-import com.example.ubfactory.repository.ProductRepository;
 import com.example.ubfactory.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -25,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
 
         Category category = productHelper.getCategoryEntity(productObject);
 
-        Product product = productHelper.getProductEntity(productObject,category);
+        Product product = productHelper.getProductEntity(productObject, category);
         ProductObject objectFromEntity = productHelper.getObjectFromEntity(product);
         objectFromEntity.setCategoryName(category.getName());
 

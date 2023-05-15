@@ -2,7 +2,6 @@ package com.example.ubfactory.helper;
 
 import com.example.ubfactory.entities.Marque;
 import com.example.ubfactory.objects.MarqueTextRequest;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;

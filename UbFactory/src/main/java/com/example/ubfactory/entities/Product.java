@@ -1,4 +1,5 @@
 package com.example.ubfactory.entities;
+
 import lombok.*;
 
 import javax.persistence.*;
