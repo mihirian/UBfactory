@@ -1,12 +1,21 @@
 package com.example.ubfactory.entities;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
+@Setter
+
+@Getter
+
+@AllArgsConstructor
+
+@NoArgsConstructor
+
+@ToString
+
 @Entity
-@Data
 @Table(name = "product")
 public class Product extends BaseEntity {
 
