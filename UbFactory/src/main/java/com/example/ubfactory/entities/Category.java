@@ -4,9 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Set;
 
 @Entity
 @Data
@@ -25,8 +23,8 @@ public class Category extends BaseEntity {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "category")
-    private Set<Product> products;
+//    @OneToMany(mappedBy = "category")
+//    private Set<Product> products;
 
     // getters and setters
 }

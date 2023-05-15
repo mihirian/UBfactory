@@ -5,15 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarqueTextResponse {
-    private Long id;
-    private String Status;
+public class CartResponse {
+    private Integer cartId;
+    private List<CartItemResponse> cartItems;
 
-    private String marqueeText;
-    private String marqueeName;
-
+    // Getters and setters
 }

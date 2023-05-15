@@ -9,11 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarqueTextResponse {
-    private Long id;
-    private String Status;
+public class UpdateCartItemRequest {
+    private int quantity;
 
-    private String marqueeText;
-    private String marqueeName;
-
+    // Getters and setters
 }

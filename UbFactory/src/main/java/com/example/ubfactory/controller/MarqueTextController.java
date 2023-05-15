@@ -28,6 +28,7 @@ public class MarqueTextController {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
+
     @PostMapping("/searchMarqueText")
     public ResponseEntity<Object> serchMarqueText(@RequestBody MarqueTextRequest marqueTextRequest) throws BusinessException {
         try {

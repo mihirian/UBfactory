@@ -6,13 +6,14 @@ import com.example.ubfactory.objects.BannerObject;
 import com.example.ubfactory.repository.BannerRepository;
 import com.example.ubfactory.service.BannerService;
 import com.example.ubfactory.validator.BannerValidator;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -33,12 +34,20 @@ public class BannerServiceImpl implements BannerService {
         bannerObject.setUpdateAt(new Date());
         Banner bannerEntity = bannerHelper.bannerObjToEntity(bannerObject);
         bannerRepository.save(bannerEntity);
-       // return bannerHelper.entityToBannerObj(bannerEntity);
+        // return bannerHelper.entityToBannerObj(bannerEntity);
         return null;
     }
 
     @Override
-    public BannerObject getBanner() {
-        return null;
+    public List<BannerObject> getBanner() {
+        List<Banner> bannerList = bannerRepository.findBannerListBystartDate(new Date());
+        List<BannerObject> responseList = bannerList.stream().map(banner -> {
+            BannerObject bannerObject = new BannerObject();
+            bannerObject.setUrl(banner.getUrl());
+            bannerObject.setName(banner.getName());
+            bannerObject.setStatus(banner.getStatus());
+            return bannerObject;
+        }).collect(Collectors.toList());
+        return responseList;
     }
 }

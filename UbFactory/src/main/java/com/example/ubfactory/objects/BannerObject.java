@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -23,7 +22,6 @@ public class BannerObject {
     private String status;
     private Date createdAt;
     private Date updateAt;
-
 
 
 }

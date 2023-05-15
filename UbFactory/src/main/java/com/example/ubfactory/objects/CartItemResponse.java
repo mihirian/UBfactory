@@ -5,15 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarqueTextResponse {
-    private Long id;
-    private String Status;
+public class CartItemResponse {
+    private Integer itemId;
+    private String productName;
+    private BigDecimal price;
+    private int quantity;
 
-    private String marqueeText;
-    private String marqueeName;
-
+    // Getters and setters
 }

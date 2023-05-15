@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductValidator {
     Logger LOGGER = LoggerFactory.getLogger(ProductValidator.class);
-    public void validateProduct(){
+
+    public void validateProduct() {
 
     }
 

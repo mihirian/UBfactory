@@ -8,8 +8,7 @@ import com.example.ubfactory.utils.Response;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface CustomerService
-{
+public interface CustomerService {
     Response cutomerRegistration(CustomerRequest request) throws BusinessException;
 
     LoginResponse customerLogin(LoginRequest request) throws BusinessException;
