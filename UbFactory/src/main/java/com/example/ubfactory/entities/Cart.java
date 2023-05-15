@@ -9,15 +9,10 @@ import java.util.Set;
 
 @Entity
 @Setter
-
 @Getter
-
 @AllArgsConstructor
-
 @NoArgsConstructor
-
 @ToString
-
 @Table(name = "cart")
 public class Cart extends BaseEntity {
 

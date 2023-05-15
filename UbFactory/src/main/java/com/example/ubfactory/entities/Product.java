@@ -7,15 +7,10 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Setter
-
 @Getter
-
 @AllArgsConstructor
-
 @NoArgsConstructor
-
 @ToString
-
 @Entity
 @Table(name = "product")
 public class Product extends BaseEntity {
