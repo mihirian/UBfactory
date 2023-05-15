@@ -26,6 +26,10 @@ public class Customer extends BaseEntity {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "owner_type", nullable = false)
+    private String ownerType;
+
+
     @OneToMany(mappedBy = "customer")
     private Set<Address> addresses;
 
