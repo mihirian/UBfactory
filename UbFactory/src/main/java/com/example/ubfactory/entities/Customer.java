@@ -9,15 +9,10 @@ import java.util.Set;
 
 @Table(name = "customer")
 @Setter
-
 @Getter
-
 @AllArgsConstructor
-
 @NoArgsConstructor
-
 @ToString
-
 @Entity
 public class Customer extends BaseEntity {
 
