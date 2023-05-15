@@ -24,10 +24,10 @@ public class CustomerServiceImp implements CustomerService {
     private CustomerHelper customerHelper;
 
     @Override
-    public Response cutomerRegistration(CustomerRequest request) throws BusinessException {
+    public Response customerRegistration(CustomerRequest request) throws BusinessException {
         Response response = new Response();
-        CustomerRequest cutomerObject = cutomerRequestVailidator.validateCutomerRequest(request);
-        Customer customer = customerHelper.getCustomerObject(cutomerObject);
+        CustomerRequest customerObject = cutomerRequestVailidator.validateCutomerRequest(request);
+        Customer customer = customerHelper.getCustomerObject(customerObject);
         customer = customerRepository.save(customer);
         response.setMessage("You have successfully registered");// we will make enum class
         return response;
