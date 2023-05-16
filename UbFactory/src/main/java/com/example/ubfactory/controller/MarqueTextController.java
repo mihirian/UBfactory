@@ -2,7 +2,7 @@ package com.example.ubfactory.controller;
 
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
-import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.objects.MarqueTextRequest;
 import com.example.ubfactory.objects.MarqueTextResponse;
 import com.example.ubfactory.service.MarqueTextService;
@@ -22,11 +22,11 @@ public class MarqueTextController {
     public ResponseEntity<Object> addMarqueText(@RequestBody MarqueTextRequest marqueTextRequest) throws BusinessException {
         try {
             MarqueTextResponse marqueTextResponse = marqueTextService.addMarqueText(marqueTextRequest);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
+            return GenericResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
         } catch (BusinessException b) {
-            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -34,11 +34,11 @@ public class MarqueTextController {
     public ResponseEntity<Object> serchMarqueText(@RequestBody MarqueTextRequest marqueTextRequest) throws BusinessException {
         try {
             MarqueTextResponse marqueTextResponse = marqueTextService.searchMarqueText(marqueTextRequest);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
+            return GenericResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
         } catch (BusinessException b) {
-            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

@@ -2,7 +2,7 @@ package com.example.ubfactory.controller;
 
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.BannerObject;
-import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.service.BannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,11 @@ public class BannerController {
     public ResponseEntity<Object> createBanner(@RequestBody BannerObject bannerObject) throws BusinessException {
         try {
             BannerObject saveBanner = bannerService.saveBanner(bannerObject);
-            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, saveBanner);
+            return GenericResponse.genricResponse("Success", HttpStatus.CREATED, saveBanner);
 //    } catch (BusinessException b) {
 //        return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -39,7 +39,7 @@ public class BannerController {
             List<BannerObject> saveBanner = bannerService.getBanner();
             return new ResponseEntity<>(saveBanner, HttpStatus.OK);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 }

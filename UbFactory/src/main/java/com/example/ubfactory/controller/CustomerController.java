@@ -3,7 +3,7 @@ package com.example.ubfactory.controller;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.CustomerRequest;
-import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ public class CustomerController {
     public ResponseEntity<Object> customerRegistration(@RequestBody CustomerRequest request) throws BusinessException {
         try {
             Response response = customerService.customerRegistration(request);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
+            return GenericResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
         } catch (BusinessException b) {
-            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 }

@@ -3,6 +3,9 @@ package com.example.ubfactory.utils;
 public interface ResponseConstants {
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILURE = "FAILURE";
+    public static final String PRODUCT_REGISTERED = "New product added successfully.";
+    public static final String PRODUCT_UPDATED = "New product updated successfully.";
+    public static final String PRODUCT_DELETED = "New product deleted successfully.";
     public static final String CUSTOMER_REGISTERED = "You have successfully registered.";
     public static final String FOOD_CATEGORY_NOT_FOUND = "Food category is not found in the request!!";
     public static final String NO_ANY_PRODUCT_FOUND = "No any product found!!";

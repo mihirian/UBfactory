@@ -3,7 +3,7 @@ package com.example.ubfactory.controller;
 //import com.razorpay.RazorpayClient;
 //import com.razorpay.RazorpayException;
 
-import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.objects.RazorpayRequestObject;
 import com.example.ubfactory.service.RazorpayService;
 import org.slf4j.Logger;
@@ -37,9 +37,9 @@ public class RazorpayController {
     public ResponseEntity<?> createOrder(@RequestBody RazorpayRequestObject razorpayRequestObject) {
         try {
             RazorpayRequestObject requestObject = razorpayService.createOrder(razorpayRequestObject);
-            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
+            return GenericResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

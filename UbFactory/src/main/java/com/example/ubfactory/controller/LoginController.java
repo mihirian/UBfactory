@@ -1,9 +1,6 @@
 package com.example.ubfactory.controller;
 
-import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.helper.JwtTokenHelper;
-import com.example.ubfactory.exception.BusinessException;
-import com.example.ubfactory.objects.GenricResponse;
 import com.example.ubfactory.objects.LoginRequest;
 import com.example.ubfactory.objects.LoginResponse;
 import com.example.ubfactory.service.CustomerService;
@@ -11,11 +8,9 @@ import com.example.ubfactory.service.serviceimpl.LoginServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
