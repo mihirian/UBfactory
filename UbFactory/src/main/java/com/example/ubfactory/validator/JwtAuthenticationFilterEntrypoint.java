@@ -10,9 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 @Component
 public class JwtAuthenticationFilterEntrypoint implements AuthenticationEntryPoint
-{
-
-        @Override
+{        @Override
         public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Access dinied !!");
         }

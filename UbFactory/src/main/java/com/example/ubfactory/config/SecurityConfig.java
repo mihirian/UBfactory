@@ -39,27 +39,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationFilter jwtautheticatorfilter;
     @Autowired
     private JwtAuthenticationFilterEntrypoint jwtAuthenticationFilterEntryPoint;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        http.csrf().disable().authorizeHttpRequests().antMatchers("/token", "/customerRegistration").permitAll().anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationFilterEntryPoint).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf()
+                .disable()
+                .authorizeHttpRequests()
+                .antMatchers("/login", "/customerRegistration").permitAll()
+                .anyRequest().authenticated().and().exceptionHandling()
+                .authenticationEntryPoint(this.jwtAuthenticationFilterEntryPoint).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtautheticatorfilter, UsernamePasswordAuthenticationFilter.class);
     }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-
         auth.userDetailsService(userDetailsService);
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
 

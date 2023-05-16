@@ -41,8 +41,6 @@ public class LoginServiceImp implements UserDetailsService
             loginResponse.setOwnerType(user.getOwnerType());
             loginResponse.setToken(token);
         }
-        System.out.println(email);
-
         return loginResponse;
 
     }

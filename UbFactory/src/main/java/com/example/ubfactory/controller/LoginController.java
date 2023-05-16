@@ -28,8 +28,7 @@ public class LoginController
     private JwtTokenHelper  jwtHelper;
     @Autowired
     private AuthenticationManager authenticationManager;
-//  @PreAuthorize("hasRole('ADMIN')") // it gives the permission only admin
-    @RequestMapping(value = "/token", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<LoginResponse> generateToken(@RequestBody LoginRequest request) throws Exception {
         try {
             this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),(request.getPassword())));
