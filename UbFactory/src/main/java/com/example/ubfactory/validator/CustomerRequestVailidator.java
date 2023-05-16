@@ -1,14 +1,14 @@
 package com.example.ubfactory.validator;
 
 import com.example.ubfactory.exception.BusinessException;
-import com.example.ubfactory.objects.CustomerRequest;
+import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerRequestVailidator {
 
-    public CustomerRequest validateCutomerRequest(CustomerRequest request) throws BusinessException {
+    public CustomerObject validateCutomerRequest(CustomerObject request) throws BusinessException {
         if (request == null) {
             throw new BusinessException(1101, ResponseConstants.INVAILID_REQUEST);
         }
