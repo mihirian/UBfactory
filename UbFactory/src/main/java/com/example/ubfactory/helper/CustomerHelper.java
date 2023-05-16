@@ -20,6 +20,7 @@ public class CustomerHelper {
         customer.setMobile(cutomerObject.getMobile());
         customer.setEmail(cutomerObject.getEmail());
         String encodedPassword = passwordEncoder.encode(cutomerObject.getPassword());
+        customer.setOwnerType(cutomerObject.getOwnertype());
         customer.setPassword(encodedPassword);
         customer.setCreatedAt(new Date());
         customer.setUpdatedAt(new Date());
