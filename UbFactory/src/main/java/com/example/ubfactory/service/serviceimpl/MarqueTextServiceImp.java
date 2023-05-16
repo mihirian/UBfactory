@@ -1,6 +1,7 @@
 package com.example.ubfactory.service.serviceimpl;
 
 import com.example.ubfactory.entities.Marque;
+import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.MarqueTextHelper;
 import com.example.ubfactory.objects.MarqueTextRequest;
@@ -37,7 +38,7 @@ public class MarqueTextServiceImp implements MarqueTextService {
         MarqueTextRequest request = marqueTextVailidator.validateSearchRequest(marqueTextRequest);
         Marque marque = marqueRepository.findByMarqueeName(request.getMarqueeName());
         MarqueTextResponse response = new MarqueTextResponse();
-        if (marque.getStatus().equals("ACTIVE")) {
+        if (marque.getStatus().equals(Status.ACTIVE.getStatus())) {
             response.setId(Long.valueOf(marque.getId()));
             response.setMarqueeText(marque.getMarqueText());
             response.setStatus(marque.getStatus());

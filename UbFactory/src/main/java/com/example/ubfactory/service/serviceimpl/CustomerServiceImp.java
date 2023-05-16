@@ -24,24 +24,13 @@ public class CustomerServiceImp implements CustomerService {
     private CustomerHelper customerHelper;
 
     @Override
-    public Response cutomerRegistration(CustomerRequest request) throws BusinessException {
+    public Response customerRegistration(CustomerRequest request) throws BusinessException {
         Response response = new Response();
-        CustomerRequest cutomerObject = cutomerRequestVailidator.validateCutomerRequest(request);
-        Customer customer = customerHelper.getCustomerObject(cutomerObject);
+        CustomerRequest customerObject = cutomerRequestVailidator.validateCutomerRequest(request);
+        Customer customer = customerHelper.getCustomerObject(customerObject);
         customer = customerRepository.save(customer);
         response.setMessage("You have successfully registered");// we will make enum class
         return response;
     }
 
-    @Override
-    public LoginResponse customerLogin(LoginRequest request) throws BusinessException {
-        Customer customer = customerRepository.findByemail(request.getEmail());
-        if (customer == null) {
-            throw new BusinessException(10, "Invalid email");
-        }
-        if (!BCrypt.checkpw(request.getPassword(), customer.getPassword())) {
-            throw new BusinessException(11, "Invalid password");
-        }
-        return null;
-    }
 }

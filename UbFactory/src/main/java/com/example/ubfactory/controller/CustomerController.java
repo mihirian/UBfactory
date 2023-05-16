@@ -1,5 +1,6 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.CustomerRequest;
 import com.example.ubfactory.objects.GenricResponse;
@@ -17,11 +18,11 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @PostMapping("/customerRegistration")
-    public ResponseEntity<Object> cutomerRegistration(@RequestBody CustomerRequest request) throws BusinessException {
+    @PostMapping("/customer/registration")
+    public ResponseEntity<Object> customerRegistration(@RequestBody CustomerRequest request) throws BusinessException {
         try {
-            Response response = customerService.cutomerRegistration(request);
-            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, response);
+            Response response = customerService.customerRegistration(request);
+            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
         } catch (BusinessException b) {
             return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {

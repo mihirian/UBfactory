@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface CustomerService {
-    Response cutomerRegistration(CustomerRequest request) throws BusinessException;
+    Response customerRegistration(CustomerRequest request) throws BusinessException;
 
-    LoginResponse customerLogin(LoginRequest request) throws BusinessException;
 }

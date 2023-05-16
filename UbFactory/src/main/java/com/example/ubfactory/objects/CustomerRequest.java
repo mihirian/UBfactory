@@ -10,4 +10,5 @@ public class CustomerRequest {
     private String mobile;
     private String email;
     private String password;
+    private String ownertype;
 }
