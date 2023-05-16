@@ -4,12 +4,18 @@ import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
 import com.example.ubfactory.objects.CustomerObject;
+import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.LoginRequest;
+import com.example.ubfactory.objects.LoginResponse;
+import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.CustomerRequestVailidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -28,13 +34,12 @@ public class CustomerServiceImp implements CustomerService {
     private CustomerHelper customerHelper;
 
     @Override
-    public Response customerRegistration(CustomerObject request) throws BusinessException {
-        Response response = new Response();
+    public Response<Customer> customerRegistration( CustomerObject request) throws BusinessException {
+        GenricResponse<Customer> response = new GenricResponse<>();
         CustomerObject customerObject = cutomerRequestVailidator.validateCutomerRequest(request);
         Customer customer = customerHelper.getCustomerObject(customerObject);
         customer = customerRepository.save(customer);
-        response.setMessage("You have successfully registered");// we will make enum class
-        return response;
+        return response.createSuccessResponse(customer, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_REGISTERED);
     }
 
     @Override
@@ -61,6 +66,7 @@ public class CustomerServiceImp implements CustomerService {
     }
     @Override
     public Response updateCustomerDetailById(CustomerObject customerObject, int id) throws BusinessException {
+        GenricResponse<Customer> response = new GenricResponse<>();
          Customer customer=customerRepository.findById(id).get();
          if(ObjectUtils.isEmpty(customer))
          {
@@ -73,9 +79,9 @@ public class CustomerServiceImp implements CustomerService {
         customer.setPassword(customerObject.getPassword());
         customer.setOwnerType(customerObject.getOwnertype());
         customerRepository.save(customer);
-        Response response=new Response();
-        response.setMessage("Successfully update");
-         return response;
+        return response.createSuccessResponse(customer, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_UPDATED);
+
+
     }
 
 
