@@ -33,15 +33,4 @@ public class CustomerServiceImp implements CustomerService {
         return response;
     }
 
-    @Override
-    public LoginResponse customerLogin(LoginRequest request) throws BusinessException {
-        Customer customer = customerRepository.findByemail(request.getEmail());
-        if (customer == null) {
-            throw new BusinessException(10, "Invalid email");
-        }
-        if (!BCrypt.checkpw(request.getPassword(), customer.getPassword())) {
-            throw new BusinessException(11, "Invalid password");
-        }
-        return null;
-    }
 }

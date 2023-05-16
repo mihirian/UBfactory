@@ -11,5 +11,4 @@ import org.springframework.stereotype.Service;
 public interface CustomerService {
     Response customerRegistration(CustomerRequest request) throws BusinessException;
 
-    LoginResponse customerLogin(LoginRequest request) throws BusinessException;
 }
