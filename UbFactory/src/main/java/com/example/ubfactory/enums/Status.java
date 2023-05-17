@@ -4,7 +4,9 @@ public enum Status {
     ACTIVE("ACTIVE"),
     INACTIVE("INACTIVE"),
     SUCCESS("SUCCESS"),
-    FAILURE("FAILURE");
+    FAILURE("FAILURE"),
+    PENDING("PENDING"),
+    INITIATED("INITIATED");
 
 
     private String status;

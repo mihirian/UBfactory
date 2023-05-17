@@ -12,7 +12,6 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "cart")
 public class Cart extends BaseEntity {
 

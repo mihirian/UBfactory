@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "cart_item")
 public class CartItem extends BaseEntity {
