@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 public class OrderRequestObject {
     public static final Logger logger = LoggerFactory.getLogger(OrderRequestObject.class);
-    private String customerId;
+    private Integer customerId;
     private Integer productId;
     private BigDecimal amount;
 

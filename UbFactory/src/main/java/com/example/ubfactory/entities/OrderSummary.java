@@ -1,8 +1,15 @@
 package com.example.ubfactory.entities;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "OrderSummary")
 public class OrderSummary extends BaseEntity {
@@ -24,7 +31,7 @@ public class OrderSummary extends BaseEntity {
     private BigDecimal totalPrice;
 
     @ManyToOne
-    @JoinColumn(name = "shipping_id", nullable = false)
+    @JoinColumn(name = "shipping_id")
     private Shipping shipping;
 
     @Column(name = "refund_status")

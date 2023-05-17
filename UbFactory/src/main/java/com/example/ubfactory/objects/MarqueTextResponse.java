@@ -9,10 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarqueTextResponse
-{
+public class MarqueTextResponse {
     private Long id;
-    private  String Status;
+    private String Status;
 
     private String marqueeText;
     private String marqueeName;

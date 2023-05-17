@@ -1,11 +1,13 @@
 package com.example.ubfactory.entities;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Data
 @Table(name = "address")
 public class Address extends BaseEntity {
 

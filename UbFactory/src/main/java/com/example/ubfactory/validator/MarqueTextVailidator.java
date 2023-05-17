@@ -2,24 +2,24 @@ package com.example.ubfactory.validator;
 
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.MarqueTextRequest;
+import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MarqueTextVailidator
-{
+public class MarqueTextVailidator {
 
     public MarqueTextRequest validateMarqueTextRequest(MarqueTextRequest marqueTextRequest) throws BusinessException {
         if (marqueTextRequest == null) {
-            throw new BusinessException(719, "Invailid Request");
+            throw new BusinessException(719, ResponseConstants.INVAILID_REQUEST);
         }
         if (marqueTextRequest.getEndDate() == null) {
-            throw new BusinessException(40002, "Invailid end date");
+            throw new BusinessException(40002, ResponseConstants.END_DATE_NOT_FOUND);
         }
         if (marqueTextRequest.getMarqueText() == null) {
-            throw new BusinessException(6000001,"Please enter MarqueeTex");
+            throw new BusinessException(6000001, ResponseConstants.MARQUEE_TEXT_NOT_FOUND);
         }
         if (marqueTextRequest.getStartDate() == null) {
-            throw new BusinessException(40001,"Invailid start date");
+            throw new BusinessException(40001, ResponseConstants.START_DATE_NOT_FOUND);
         }
 
         return marqueTextRequest;
@@ -27,12 +27,9 @@ public class MarqueTextVailidator
 
     public MarqueTextRequest validateSearchRequest(MarqueTextRequest marqueTextRequest) throws BusinessException {
         if (marqueTextRequest == null) {
-            throw new BusinessException(719, "Invailid request");
+            throw new BusinessException(719, ResponseConstants.INVAILID_REQUEST);
         }
-//        if (marqueTextRequest.getStatus() == null) {
-//            throw new BusinessException(457,"");
-//        }
         return marqueTextRequest;
     }
-    }
+}
 
