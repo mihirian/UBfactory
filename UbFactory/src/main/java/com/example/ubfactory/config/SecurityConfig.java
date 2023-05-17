@@ -41,10 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationFilterEntrypoint jwtAuthenticationFilterEntryPoint;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
+        http.csrf()
+                .disable()
+                .authorizeHttpRequests()
                 .antMatchers("/login", "/customer/registration").permitAll()
                 .antMatchers(HttpMethod.GET).permitAll()
+                .antMatchers(HttpMethod.POST).permitAll()
                 .antMatchers(PUBLIC_URLS).permitAll()
                 // Add security rules for specific APIs here
                 .antMatchers("/api/secure/**").authenticated()
