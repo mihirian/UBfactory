@@ -4,13 +4,16 @@ import com.example.ubfactory.entities.Marque;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.MarqueTextHelper;
+import com.example.ubfactory.objects.GenricResponse;
 import com.example.ubfactory.objects.MarqueTextRequest;
 import com.example.ubfactory.objects.MarqueTextResponse;
 import com.example.ubfactory.repository.MarqueRepository;
 import com.example.ubfactory.service.MarqueTextService;
+import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.MarqueTextVailidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,6 +53,23 @@ public class MarqueTextServiceImp implements MarqueTextService {
         }
         return response;
     }
+
+    @Override
+    public Response<Marque> updateMarqueeText(MarqueTextRequest marqueTextRequest) throws BusinessException {
+        GenricResponse<Marque> response=new GenricResponse<>();
+        Marque marque = marqueRepository.findByMarqueeName(marqueTextRequest.getMarqueeName());
+        if(marque==null)
+        {
+            throw new BusinessException(ResponseConstants.FAILURE);
+        }
+        marque.setMarqueText(marqueTextRequest.getMarqueText());
+        marque.setStartDate(marqueTextRequest.getStartDate());
+        marque.setEndDate(marqueTextRequest.getEndDate());
+        marqueRepository.save(marque);
+        return response.createSuccessResponse(null,HttpStatus.OK.value(), ResponseConstants.UPDATE_SUCCESSFULLY);
+
+    }
+
 
 }
 

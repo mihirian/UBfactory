@@ -17,6 +17,7 @@ public interface ResponseConstants {
     public static final String START_DATE_NOT_FOUND = "Start date not found";
     public static final String END_DATE_NOT_FOUND = "End date not found";
     public static final String MARQUEE_TEXT_NOT_FOUND = "Marquee text not found";
+    public static final String UPDATE_SUCCESSFULLY = "Update successfully!!";
 
 
 
