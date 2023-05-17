@@ -20,7 +20,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductObject createProduct(ProductObject productObject) {
 
         Category category = productHelper.getCategoryEntity(productObject);
-
         Product product = productHelper.getProductEntity(productObject, category);
         ProductObject objectFromEntity = productHelper.getObjectFromEntity(product);
         objectFromEntity.setCategoryName(category.getName());
