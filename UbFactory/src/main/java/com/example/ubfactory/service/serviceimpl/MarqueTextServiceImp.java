@@ -8,6 +8,7 @@ import com.example.ubfactory.objects.MarqueTextRequest;
 import com.example.ubfactory.objects.MarqueTextResponse;
 import com.example.ubfactory.repository.MarqueRepository;
 import com.example.ubfactory.service.MarqueTextService;
+import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.MarqueTextVailidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,12 @@ public class MarqueTextServiceImp implements MarqueTextService {
     }
 
     @Override
-    public MarqueTextResponse searchMarqueText(MarqueTextRequest marqueTextRequest) throws BusinessException {
-        MarqueTextRequest request = marqueTextVailidator.validateSearchRequest(marqueTextRequest);
-        Marque marque = marqueRepository.findByMarqueeName(request.getMarqueeName());
+    public MarqueTextResponse searchMarqueText(String marqueeName) throws BusinessException {
+        Marque marque = marqueRepository.findByMarqueeName(marqueeName);
+        if(marque==null)
+        {
+            throw new BusinessException(ResponseConstants.MARQUEE_TEXT_NOT_FOUND);
+        }
         MarqueTextResponse response = new MarqueTextResponse();
         if (marque.getStatus().equals(Status.ACTIVE.getStatus())) {
             response.setId(Long.valueOf(marque.getId()));

@@ -10,5 +10,5 @@ public interface MarqueTextService {
 
     MarqueTextResponse addMarqueText(MarqueTextRequest marqueTextRequest) throws BusinessException;
 
-    MarqueTextResponse searchMarqueText(MarqueTextRequest marqueTextRequest) throws BusinessException;
+    MarqueTextResponse searchMarqueText(String marqueeName) throws BusinessException;
 }
