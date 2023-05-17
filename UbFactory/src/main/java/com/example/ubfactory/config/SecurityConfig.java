@@ -24,14 +24,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true)// is used for role permission
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    //        public static final String []PUBLIC_URLS=
-//                {
-//                        "/v3/api-docs",
-//                        "/v2/api-docs",
-//                        "/swaggeimplements UserDetailsService r_resources/**",
-//                        "/swagger_ui/**",
-//                        "/webjar/**"
-//                };
+            public static final String []PUBLIC_URLS=
+                {
+                        "/v3/api-docs",
+                        "/v2/api-docs",
+                        "/swaggeimplements UserDetailsService r_resources/**",
+                        "/swagger_ui/**",
+                        "/webjar/**"
+                };
     @Autowired
     private LoginServiceImp userDetailsService;
 
@@ -45,10 +45,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeHttpRequests()
                 .antMatchers("/login", "/customer/registration").permitAll()
-                .antMatchers(HttpMethod.POST).permitAll()
                 .antMatchers(HttpMethod.GET).permitAll()
-                .anyRequest().authenticated().and().exceptionHandling()
-                .authenticationEntryPoint(this.jwtAuthenticationFilterEntryPoint).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .antMatchers(HttpMethod.POST).permitAll()
+                .antMatchers(PUBLIC_URLS).permitAll()
+                // Add security rules for specific APIs here
+                .antMatchers("/api/secure/**").authenticated()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().permitAll() // Allow all other requests without authentication
+                .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationFilterEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtautheticatorfilter, UsernamePasswordAuthenticationFilter.class);
     }

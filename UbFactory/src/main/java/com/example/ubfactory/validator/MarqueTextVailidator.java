@@ -25,11 +25,6 @@ public class MarqueTextVailidator {
         return marqueTextRequest;
     }
 
-    public MarqueTextRequest validateSearchRequest(MarqueTextRequest marqueTextRequest) throws BusinessException {
-        if (marqueTextRequest == null) {
-            throw new BusinessException(719, ResponseConstants.INVAILID_REQUEST);
-        }
-        return marqueTextRequest;
-    }
+
 }
 
