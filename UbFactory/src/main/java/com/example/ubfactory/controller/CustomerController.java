@@ -2,6 +2,7 @@ package com.example.ubfactory.controller;
 
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
+import com.example.ubfactory.objects.ChangePasswordRequest;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.objects.GenricResponse;
 import com.example.ubfactory.service.CustomerService;
@@ -52,4 +53,20 @@ public class CustomerController {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
+
+
+    @PutMapping("/change/password")
+    public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) throws BusinessException {
+        try {
+            Response response = customerService.changePassword(changePasswordRequest);
+            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+        } catch (BusinessException b) {
+            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
+
+
+
 }

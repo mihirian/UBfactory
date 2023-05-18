@@ -3,10 +3,7 @@ package com.example.ubfactory.service.serviceimpl;
 import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
-import com.example.ubfactory.objects.CustomerObject;
-import com.example.ubfactory.objects.GenricResponse;
-import com.example.ubfactory.objects.LoginRequest;
-import com.example.ubfactory.objects.LoginResponse;
+import com.example.ubfactory.objects.*;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
 import com.example.ubfactory.service.CustomerService;
@@ -16,6 +13,7 @@ import com.example.ubfactory.validator.CustomerRequestVailidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -32,6 +30,8 @@ public class CustomerServiceImp implements CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private CustomerHelper customerHelper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Response<Customer> customerRegistration( CustomerObject request) throws BusinessException {
@@ -84,5 +84,34 @@ public class CustomerServiceImp implements CustomerService {
 
     }
 
+    @Override
+    public Response changePassword(ChangePasswordRequest changePasswordRequest) throws BusinessException
+    {
+        GenricResponse<Customer> response = new GenricResponse<>();
+        Optional<Customer> optionalCustomer = customerRepository.findById(changePasswordRequest.getId());
+
+        if (!optionalCustomer.isPresent()) {
+            throw new BusinessException(ResponseConstants.CUSTOMER_NOT_FOUND);
+        }
+
+        Customer customer = optionalCustomer.get();
+        String currentPassword = changePasswordRequest.getCurrentPassword();
+        String newPassword = changePasswordRequest.getNewPassword();
+        String confirmPassword = changePasswordRequest.getConfirmPassword();
+
+        if (!passwordEncoder.matches(currentPassword, customer.getPassword())) {
+            throw new BusinessException(ResponseConstants.PASSWORD_MISMATCH);
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new BusinessException(ResponseConstants.PASSWORD_MISMATCH);
+        }
+
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        customer.setPassword(encodedNewPassword);
+        customerRepository.save(customer);
+
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_UPDATED);
+    }
 
 }
