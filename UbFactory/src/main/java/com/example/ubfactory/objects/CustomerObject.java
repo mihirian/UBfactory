@@ -1,13 +1,9 @@
 package com.example.ubfactory.objects;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-@Getter
-@Setter
-public class CustomerRequest {
+public class CustomerObject {
     protected Integer id;
     private String firstName;
     private String lastName;
