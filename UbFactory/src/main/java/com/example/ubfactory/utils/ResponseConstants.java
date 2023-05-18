@@ -4,6 +4,8 @@ public interface ResponseConstants {
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILURE = "FAILURE";
     public static final String CUSTOMER_REGISTERED = "You have successfully registered.";
+    public static final String CUSTOMER_UPDATED = "You have successfully update";
+
     public static final String FOOD_CATEGORY_NOT_FOUND = "Food category is not found in the request!!";
     public static final String NO_ANY_PRODUCT_FOUND = "No any product found!!";
     public static final String PRODUCT_NOT_FOUND = "Product not found!!";
@@ -18,6 +20,10 @@ public interface ResponseConstants {
     public static final String END_DATE_NOT_FOUND = "End date not found";
     public static final String MARQUEE_TEXT_NOT_FOUND = "Marquee text not found";
     public static final String UPDATE_SUCCESSFULLY = "Update successfully!!";
+    public static final String CUSTOMER_LIST_NOT_FOUND ="Customer list not found";
+    public static final String CUSTOMER_DETAIL_NOT_FOUND ="Customer detail not found";
+    public static final String PASSWORD_MISMATCH ="Password mismatch";
+
 
 
 
