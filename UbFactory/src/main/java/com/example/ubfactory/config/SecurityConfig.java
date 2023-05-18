@@ -49,11 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST).permitAll()
                 .antMatchers(PUBLIC_URLS).permitAll()
                 .antMatchers(HttpMethod.PUT).permitAll()
-                .anyRequest().authenticated()
-                // Add security rules for specific APIs here
                 .antMatchers("/api/secure/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().permitAll() // Allow all other requests without authentication
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationFilterEntryPoint)
                 .and()
