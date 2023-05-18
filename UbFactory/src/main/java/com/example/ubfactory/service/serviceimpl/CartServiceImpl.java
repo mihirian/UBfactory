@@ -39,7 +39,7 @@ public class CartServiceImpl implements CartService {
     public CartResponse getCartItems(Integer customerId) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
-        Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        Cart cart = cartRepository.findByCustomer(customer).orElseGet(() -> createCartForCustomer(customer));
 
         return CartMapper.toCartResponse(cart);
     }
