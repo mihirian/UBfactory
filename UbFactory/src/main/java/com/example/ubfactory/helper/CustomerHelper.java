@@ -27,6 +27,7 @@ public class CustomerHelper {
         String encodedPassword = passwordEncoder.encode(cutomerObject.getPassword());
         customer.setOwnerType(cutomerObject.getOwnertype());
         customer.setPassword(encodedPassword);
+        customer.setOwnerId(cutomerObject.getOwnerId());
         customer.setCreatedAt(new Date());
         customer.setUpdatedAt(new Date());
         return customer;

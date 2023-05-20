@@ -1,11 +1,13 @@
 package com.example.ubfactory.service.serviceimpl;
 
 import com.example.ubfactory.entities.Customer;
+import com.example.ubfactory.entities.Token;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
+import com.example.ubfactory.repository.TokenDao;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,9 +35,11 @@ public class CustomerServiceImp implements CustomerService {
     private CustomerHelper customerHelper;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private TokenDao tokenDao;
 
     @Override
-    public Response<Customer> customerRegistration( CustomerObject request) throws BusinessException {
+    public Response<Customer> customerRegistration(CustomerObject request) throws BusinessException {
         GenricResponse<Customer> response = new GenricResponse<>();
         CustomerObject customerObject = cutomerRequestVailidator.validateCutomerRequest(request);
         Customer customer = customerHelper.getCustomerObject(customerObject);
@@ -44,15 +49,13 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public List<CustomerObject> fetchAllCustomerDetail() throws BusinessException {
-        List<CustomerObject> CustomerResponse=new ArrayList<>();
-        List<Customer> customersList=customerRepository.findAll();
-        if(customersList==null)
-        {
+        List<CustomerObject> CustomerResponse = new ArrayList<>();
+        List<Customer> customersList = customerRepository.findAll();
+        if (customersList == null) {
             throw new BusinessException(111, ResponseConstants.CUSTOMER_LIST_NOT_FOUND);
         }
-        for(Customer customer:customersList)
-        {
-            CustomerObject response=new CustomerObject();
+        for (Customer customer : customersList) {
+            CustomerObject response = new CustomerObject();
             response.setId(customer.getId());
             response.setFirstName(customer.getFirstName());
             response.setLastName(customer.getLastName());
@@ -64,14 +67,14 @@ public class CustomerServiceImp implements CustomerService {
         }
         return CustomerResponse;
     }
+
     @Override
     public Response updateCustomerDetailById(CustomerObject customerObject, int id) throws BusinessException {
         GenricResponse<Customer> response = new GenricResponse<>();
-         Customer customer=customerRepository.findById(id).get();
-         if(ObjectUtils.isEmpty(customer))
-         {
-             throw  new BusinessException(112,ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
-         }
+        Customer customer = customerRepository.findById(id).get();
+        if (ObjectUtils.isEmpty(customer)) {
+            throw new BusinessException(112, ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
+        }
         customer.setFirstName(customerObject.getFirstName());
         customer.setLastName(customerObject.getLastName());
         customer.setEmail(customerObject.getEmail());
@@ -85,8 +88,7 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public Response changePassword(ChangePasswordRequest changePasswordRequest) throws BusinessException
-    {
+    public Response changePassword(ChangePasswordRequest changePasswordRequest) throws BusinessException {
         GenricResponse<Customer> response = new GenricResponse<>();
         Optional<Customer> optionalCustomer = customerRepository.findById(changePasswordRequest.getId());
 
@@ -114,4 +116,16 @@ public class CustomerServiceImp implements CustomerService {
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_UPDATED);
     }
 
+    @Override
+    @Transactional
+    public Response logout(Integer ownerId) throws BusinessException {
+        GenricResponse<Customer> response = new GenricResponse<>();
+        Token token = tokenDao.findByownerId(ownerId);
+        if (token == null) {
+            throw new BusinessException(ResponseConstants.FAILURE);
+        }
+        tokenDao.deleteByownerId(ownerId);
+
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.LOGOUT_SUCCESSFULLY);
+    }
 }
