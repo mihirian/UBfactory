@@ -33,20 +33,20 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{customerId}/items/{itemId}")
+    @PutMapping("/{customerId}/items/{productId}")
     public ResponseEntity<CartItemResponse> updateCartItemQuantity(
             @PathVariable Integer customerId,
-            @PathVariable Integer itemId,
+            @PathVariable Integer productId,
             @Valid @RequestBody UpdateCartItemRequest request) {
-        CartItemResponse response = cartService.updateCartItemQuantity(customerId, itemId, request);
+        CartItemResponse response = cartService.updateCartItemQuantity(customerId, productId, request);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{customerId}/items/{itemId}")
+    @DeleteMapping("/{customerId}/items/{productId}")
     public ResponseEntity<Void> deleteCartItem(
             @PathVariable Integer customerId,
-            @PathVariable Integer itemId) {
-        cartService.deleteCartItem(customerId, itemId);
+            @PathVariable Integer productId) {
+        cartService.deleteCartItem(customerId, productId);
         return ResponseEntity.noContent().build();
     }
 }
