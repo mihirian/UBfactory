@@ -11,4 +11,5 @@ public class CustomerObject {
     private String email;
     private String password;
     private String ownertype;
+    private Integer ownerId;
 }
