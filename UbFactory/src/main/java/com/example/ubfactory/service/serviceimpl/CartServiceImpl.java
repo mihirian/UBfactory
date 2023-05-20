@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
+import java.util.Optional;
 
 
 @Service
@@ -52,12 +53,32 @@ public class CartServiceImpl implements CartService {
 
         Product product = productRepository.findById(request.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
+        // Check if the product is already in the cart
+        boolean productAlreadyInCart = cart.getCartItems().stream()
+                .anyMatch(item -> item.getProduct().equals(product));
+
+        if (productAlreadyInCart) {
+            throw new IllegalStateException("Product is already in the cart");
+        }
+
         CartItem cartItem = CartMapper.toCartItem(request, cart, product);
         cart.getCartItems().add(cartItem);
         cart.setUpdatedAt(new Date());
-        cartRepository.save(cart);
 
-        return CartMapper.toCartItemResponse(cartItem);
+        // Save the cart which contains the new CartItem
+        Cart savedCart = cartRepository.save(cart);
+
+        // Now the CartItem should have been saved and assigned an id
+        // Find the saved CartItem in the saved Cart
+        Optional<CartItem> savedCartItem = savedCart.getCartItems().stream()
+                .filter(item -> item.getProduct().equals(product))
+                .findFirst();
+
+        if (savedCartItem.isPresent()) {
+            return CartMapper.toCartItemResponse(savedCartItem.get());
+        } else {
+            throw new IllegalStateException("Failed to save CartItem");
+        }
     }
 
     @Override
