@@ -40,6 +40,12 @@ public class CartMapper {
         cartItemResponse.setPrice(cartItem.getProduct().getPrice());
         cartItemResponse.setQuantity(cartItem.getQuantity());
 
+        // Get additional fields from the product table
+        cartItemResponse.setDescription(cartItem.getProduct().getDescription());
+        cartItemResponse.setProductId(cartItem.getProduct().getId());
+        cartItemResponse.setImage(cartItem.getProduct().getImageUrl());
+        cartItemResponse.setOriginalPrice(cartItem.getProduct().getOriginalPrice());
+
         return cartItemResponse;
     }
 }
