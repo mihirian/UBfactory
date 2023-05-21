@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderSummaryRepository  extends JpaRepository<OrderSummary, Integer> {
+    OrderSummary findByRazorpayId(String razorpayId);
 }

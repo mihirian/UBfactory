@@ -3,6 +3,8 @@ package com.example.ubfactory.helper;
 import com.example.ubfactory.entities.*;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.objects.OrderRequestObject;
+import com.example.ubfactory.objects.OrderResponseObject;
+import com.example.ubfactory.objects.RazorpayResponseObject;
 import com.example.ubfactory.repository.OrderSummaryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,5 +35,28 @@ public class OrderHelper {
         orderSummary.setShipping(shipping);
         orderSummaryRepository.save(orderSummary);
         return orderSummary;
+    }
+
+    public OrderResponseObject getOrderResponse(RazorpayResponseObject responseObject, OrderSummary orderSummary) {
+        OrderResponseObject orderResponseObject =new OrderResponseObject();
+        orderResponseObject.setAmount(responseObject.getAmount());
+        orderResponseObject.setOrderId(responseObject.getId());
+        orderResponseObject.setEntity(responseObject.getEntity());
+        orderResponseObject.setAttempts(responseObject.getAttempts());
+        orderResponseObject.setReceipt(responseObject.getReceipt());
+        orderResponseObject.setStatus(responseObject.getStatus());
+        orderResponseObject.setAmount_due(responseObject.getAmount_due());
+        orderResponseObject.setOffer_id(responseObject.getOffer_id());
+        orderResponseObject.setCustomerId(orderSummary.getCustomer().getId());
+
+
+
+       return orderResponseObject;
+    }
+
+    public void postCreateOrder(OrderSummary orderSummary) {
+        orderSummary.setOrderStatus(Status.PENDING.getStatus());
+        orderSummary.setPaymentStatus(Status.PENDING.getStatus());
+        orderSummaryRepository.save(orderSummary);
     }
 }
