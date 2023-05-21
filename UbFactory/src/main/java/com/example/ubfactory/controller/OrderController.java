@@ -2,10 +2,7 @@ package com.example.ubfactory.controller;
 
 //import com.razorpay.RazorpayClient;
 //import com.razorpay.RazorpayException;
-import com.example.ubfactory.objects.GenricResponse;
-import com.example.ubfactory.objects.OrderRequestObject;
-import com.example.ubfactory.objects.OrderResponseObject;
-import com.example.ubfactory.objects.RazorpayRequestObject;
+import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.RazorpayService;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -36,6 +33,16 @@ public class OrderController {
              return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
          }
      }
+
+     @PostMapping("/capture/payment")
+    public ResponseEntity<?> capturePayment(@RequestBody OrderRequestObject orderRequestObject) {
+        try {
+            CapturePaymentResponse requestObject = razorpayService.capturePayment(orderRequestObject);
+            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
     }
 
 

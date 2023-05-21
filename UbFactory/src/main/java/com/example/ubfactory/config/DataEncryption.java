@@ -8,6 +8,8 @@ import java.util.Base64;
 
 @Component
 public class DataEncryption {
+    private final String keyId = "rzp_test_XVEHHxt1YOPY7q";
+    private final String secretKey = "szAIjTeJwbucWKaiTK3itpBY";
 
     public static final Logger logger = LoggerFactory.getLogger(DataEncryption.class);
      public String decoder(String encodedString){

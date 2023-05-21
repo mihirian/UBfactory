@@ -53,4 +53,10 @@ public class OrderHelper {
 
        return orderResponseObject;
     }
+
+    public void postCreateOrder(OrderSummary orderSummary) {
+        orderSummary.setOrderStatus(Status.PENDING.getStatus());
+        orderSummary.setPaymentStatus(Status.PENDING.getStatus());
+        orderSummaryRepository.save(orderSummary);
+    }
 }

@@ -40,5 +40,8 @@ public class OrderSummary extends BaseEntity {
     @Column(name = "reason")
     private String reason;
 
+    @Column(name = "razorpay_id")
+    private String razorpayId;
+
     // getters and setters
 }

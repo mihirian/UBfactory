@@ -22,7 +22,7 @@ public class PaymentSummary extends BaseEntity {
     @Column(name = "order_id")
     private Integer orderId;
     @Column(name = "payment_id")
-    private Integer paymentId;
+    private String paymentId;
     @Column(name = "customer_id")
     private Integer customerId;
     @Column(name = "create_order_request")
