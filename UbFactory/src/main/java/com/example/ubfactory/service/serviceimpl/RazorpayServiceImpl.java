@@ -113,6 +113,7 @@ public class RazorpayServiceImpl implements RazorpayService {
             throw new BusinessException("Payment detail not found");
         }
         paymentSummary.setPaymentId(orderRequestObject.getPaymentId());
+        paymentRepository.save(paymentSummary);
 
         String url = "https://api.razorpay.com/v1/payments/"+orderRequestObject.getPaymentId()+"/capture";
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -134,15 +135,21 @@ public class RazorpayServiceImpl implements RazorpayService {
             paymentSummary.setPaymentStatus(Status.SUCCESS.getStatus());
             orderSummary.setOrderStatus(Status.SUCCESS.getStatus());
             orderSummary.setPaymentStatus(Status.SUCCESS.getStatus());
+            paymentRepository.save(paymentSummary);
+            orderSummaryRepository.save(orderSummary);
         }
         else if(capturePaymentResponse.getError() != null || capturePaymentResponse.getError_code() != null){
             paymentSummary.setPaymentStatus(Status.FAILURE.getStatus());
             orderSummary.setOrderStatus(Status.FAILURE.getStatus());
             orderSummary.setPaymentStatus(Status.FAILURE.getStatus());
+            paymentRepository.save(paymentSummary);
+            orderSummaryRepository.save(orderSummary);
         }else {
             paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
             orderSummary.setOrderStatus(Status.PENDING.getStatus());
             orderSummary.setPaymentStatus(Status.PENDING.getStatus());
+            paymentRepository.save(paymentSummary);
+            orderSummaryRepository.save(orderSummary);
         }
 
         return capturePaymentResponse;
