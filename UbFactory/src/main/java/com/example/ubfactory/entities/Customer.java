@@ -16,7 +16,8 @@ import java.util.Set;
 public class Customer extends BaseEntity
 {
 
-    private Integer ownerId;
+
+
     @Column(name = "first_name", nullable = false)
     private String firstName;
 

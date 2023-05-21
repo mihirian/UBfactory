@@ -3,13 +3,14 @@ package com.example.ubfactory.helper;
 import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
-import com.example.ubfactory.utils.Response;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class CustomerHelper {
@@ -17,6 +18,9 @@ public class CustomerHelper {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private JavaMailSender javaMailSender;
+
 
     public Customer getCustomerObject(CustomerObject cutomerObject) {
         Customer customer = new Customer();
@@ -33,4 +37,21 @@ public class CustomerHelper {
     }
 
 
+    public String generateOTP()
+    {
+        int otpLength = 6; // Length of the OTP
+        boolean useLetters = false; // Use only digits
+        boolean useNumbers = true;
+        return RandomStringUtils.random(otpLength, useLetters, useNumbers);
+    }
+
+    public void sendOTPByEmail(String email, String otp)
+    {
+        SimpleMailMessage message
+                = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Password Reset Verification Code");
+        message.setText("Dear user,\n\nYou have requested to reset your password. Please use the following verification code to proceed:\n\nVerification Code: " + otp + "\n\nIf you did not initiate this password reset, please ignore this email. Ensure the security of your account and do not share this code with anyone.\n\nThank you,\nThe Support Team");
+       javaMailSender.send(message);
+    }
 }
