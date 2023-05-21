@@ -41,6 +41,10 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public Response<Customer> customerRegistration(CustomerObject request) throws BusinessException {
         GenricResponse<Customer> response = new GenricResponse<>();
+        Customer customer1=customerRepository.findByemail(request.getEmail());
+        if (customer1 != null) {
+            throw new BusinessException(ResponseConstants.EMAIL_ALREADY_EXIST);
+        }
         CustomerObject customerObject = cutomerRequestVailidator.validateCutomerRequest(request);
         Customer customer = customerHelper.getCustomerObject(customerObject);
         customer = customerRepository.save(customer);
@@ -127,5 +131,20 @@ public class CustomerServiceImp implements CustomerService {
         tokenDao.deleteByownerId(ownerId);
 
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.LOGOUT_SUCCESSFULLY);
+    }
+
+    @Override
+    public Response resetPassword(ResetPassword request) throws BusinessException {
+        GenricResponse<Customer> response = new GenricResponse<>();
+        Customer customer=customerRepository.findByemail(request.getEmail());
+        if(customer==null)
+        {
+            throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
+        }
+        String newpassword=passwordEncoder.encode(request.getNewPassword());
+        customer.setPassword(newpassword);
+        customerRepository.save(customer);
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
+
     }
 }

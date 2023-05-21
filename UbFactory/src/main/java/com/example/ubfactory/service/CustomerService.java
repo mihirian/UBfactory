@@ -3,6 +3,7 @@ package com.example.ubfactory.service;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.ChangePasswordRequest;
 import com.example.ubfactory.objects.CustomerObject;
+import com.example.ubfactory.objects.ResetPassword;
 import com.example.ubfactory.objects.TokenResponse;
 import com.example.ubfactory.utils.Response;
 import org.springframework.stereotype.Service;
@@ -22,4 +23,6 @@ public interface CustomerService {
 
 
     Response logout(Integer ownerId) throws BusinessException;
+
+    Response resetPassword(ResetPassword request) throws BusinessException;
 }

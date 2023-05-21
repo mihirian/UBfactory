@@ -45,7 +45,7 @@ public class LoginServiceImp implements UserDetailsService
             UserDetails userDetails = loadUserByUsername(email);
             String token = this.jwtTokenHelper.generateToken(userDetails);
             tok.setToken(token);
-            tok.setOwnerId(user.getOwnerId());
+            tok.setOwnerId(user.getId());
             tokenDao.save(tok);
             loginResponse.setOwnerId(Long.valueOf(user.getId()));
             loginResponse.setOwnerType(user.getOwnerType());
