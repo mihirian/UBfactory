@@ -24,6 +24,11 @@ public interface ResponseConstants {
     public static final String CUSTOMER_DETAIL_NOT_FOUND ="Customer detail not found";
     public static final String PASSWORD_MISMATCH ="Password mismatch";
     public static final String LOGOUT_SUCCESSFULLY ="Logout successfully";
+    public static final String MAIL_SEND_SUCCESSFULLY="Password reset email sent successfully!";
+    public static final String OTP_VERIFICATION="OTP verification successful!";
+    public static final String INVALID_OTP="Invalid OTP";
+
+
 
 
 
