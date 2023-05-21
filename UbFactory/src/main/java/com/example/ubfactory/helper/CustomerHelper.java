@@ -31,7 +31,6 @@ public class CustomerHelper {
         String encodedPassword = passwordEncoder.encode(cutomerObject.getPassword());
         customer.setOwnerType(cutomerObject.getOwnertype());
         customer.setPassword(encodedPassword);
-        customer.setOwnerId(cutomerObject.getOwnerId());
         customer.setCreatedAt(new Date());
         customer.setUpdatedAt(new Date());
         return customer;
@@ -53,7 +52,6 @@ public class CustomerHelper {
         message.setTo(email);
         message.setSubject("Password Reset Verification Code");
         message.setText("Dear user,\n\nYou have requested to reset your password. Please use the following verification code to proceed:\n\nVerification Code: " + otp + "\n\nIf you did not initiate this password reset, please ignore this email. Ensure the security of your account and do not share this code with anyone.\n\nThank you,\nThe Support Team");
-//       message.setText("Your OTP for password reset is: " + otp);
        javaMailSender.send(message);
     }
 }

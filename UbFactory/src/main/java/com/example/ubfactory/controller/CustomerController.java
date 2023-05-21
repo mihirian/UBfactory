@@ -6,6 +6,7 @@ import com.example.ubfactory.helper.CustomerHelper;
 import com.example.ubfactory.objects.ChangePasswordRequest;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.ResetPassword;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
@@ -105,7 +106,18 @@ public class CustomerController {
         } catch (Exception e) {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
+    }
 
+    @PostMapping("/reset/password")
+    public ResponseEntity<Object> resetPassword(@RequestBody ResetPassword request) throws BusinessException {
+        try {
+            Response response = customerService.resetPassword(request);
+            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+        } catch (BusinessException b) {
+            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
     }
 
 

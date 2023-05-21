@@ -27,6 +27,8 @@ public interface ResponseConstants {
     public static final String MAIL_SEND_SUCCESSFULLY="Password reset email sent successfully!";
     public static final String OTP_VERIFICATION="OTP verification successful!";
     public static final String INVALID_OTP="Invalid OTP";
+    public static final String PASSWORD_RESET="Password reset successfully";
+    public static final String EMAIL_ALREADY_EXIST="User already registered with the provided email address.";
 
 
 
