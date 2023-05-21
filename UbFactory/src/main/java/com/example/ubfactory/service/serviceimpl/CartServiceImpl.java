@@ -82,12 +82,15 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartItemResponse updateCartItemQuantity(Integer customerId, Integer itemId, UpdateCartItemRequest request) {
+    public CartItemResponse updateCartItemQuantity(Integer customerId, Integer productId, UpdateCartItemRequest request) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
         Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
 
-        CartItem cartItem = cart.getCartItems().stream().filter(item -> item.getId().equals(itemId)).findFirst().orElseThrow(() -> new EntityNotFoundException("Cart item not found"));
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Cart item not found"));
 
         cartItem.setQuantity(request.getQuantity());
         cartRepository.save(cart);
@@ -96,12 +99,15 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteCartItem(Integer customerId, Integer itemId) {
+    public void deleteCartItem(Integer customerId, Integer productId) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new EntityNotFoundException(ResponseConstants.CUSTOMER_NOT_FOUND));
 
         Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException(ResponseConstants.CART_ITEM_NOT_FOUND));
 
-        CartItem cartItem = cart.getCartItems().stream().filter(item -> item.getId().equals(itemId)).findFirst().orElseThrow(() -> new EntityNotFoundException(ResponseConstants.CART_ITEM_NOT_FOUND));
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(ResponseConstants.CART_ITEM_NOT_FOUND));
 
         cart.getCartItems().remove(cartItem);
         cartRepository.save(cart);
