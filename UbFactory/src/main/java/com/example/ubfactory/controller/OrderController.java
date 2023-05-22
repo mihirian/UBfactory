@@ -2,9 +2,7 @@ package com.example.ubfactory.controller;
 
 //import com.razorpay.RazorpayClient;
 //import com.razorpay.RazorpayException;
-import com.example.ubfactory.objects.GenricResponse;
-import com.example.ubfactory.objects.OrderRequestObject;
-import com.example.ubfactory.objects.RazorpayRequestObject;
+import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.RazorpayService;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -24,38 +22,27 @@ public class OrderController {
     @Autowired
     private RazorpayService razorpayService;
 
-//    @PostMapping()
-//    public ResponseEntity<Object>  createOrder(@RequestBody RazorpayRequestObject razorpayRequestObject){
-//        try{
-//            RazorpayRequestObject requestObject = razorpayService.createOrder(razorpayRequestObject);
-//            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
-//
-//        }catch (Exception e) {
-//            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-//        }
-
-
-        @PostMapping("")
-        public ResponseEntity<?> createRazarpayOrder(@RequestBody RazorpayRequestObject razorpayRequestObject) {
-            try {
-                RazorpayRequestObject requestObject = razorpayService.createRazarpayOrder(razorpayRequestObject);
-                return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
-            } catch (Exception e) {
-                return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-            }
-        }
-
     @PostMapping("/create-order")
 
     //create order
      public ResponseEntity<?> createOrder(@RequestBody OrderRequestObject orderRequestObject) {
          try {
-             OrderRequestObject requestObject = razorpayService.createOrder(orderRequestObject);
+             OrderResponseObject requestObject = razorpayService.createOrder(orderRequestObject);
              return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
          } catch (Exception e) {
              return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
          }
      }
+
+     @PostMapping("/capture/payment")
+    public ResponseEntity<?> capturePayment(@RequestBody OrderRequestObject orderRequestObject) {
+        try {
+            CapturePaymentResponse requestObject = razorpayService.capturePayment(orderRequestObject);
+            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
     }
 
 

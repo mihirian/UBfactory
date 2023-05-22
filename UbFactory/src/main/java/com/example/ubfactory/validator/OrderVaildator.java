@@ -26,9 +26,22 @@ public class OrderVaildator {
     public Cart validateOrderRequest(OrderRequestObject orderRequestObject) throws BusinessException {
          Customer customer = customerRepository.findById(orderRequestObject.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
             Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("cart not found"));
-        if(ObjectUtils.isEmpty(orderRequestObject.getProductId())){
-           throw new BusinessException("Product id cannot be null");
-        }
+//        if(ObjectUtils.isEmpty(orderRequestObject.getProductId())){
+//           throw new BusinessException("Product id cannot be null");
+//        }
         return cart;
+    }
+
+    public void validateCapturePayment(OrderRequestObject orderRequestObject) throws BusinessException {
+        if(ObjectUtils.isEmpty(orderRequestObject.getPaymentId())){
+            throw new BusinessException("Payment id not found.");
+        }
+        if(ObjectUtils.isEmpty(orderRequestObject.getSignature())){
+            throw new BusinessException("Signature not found");
+        }
+        if(ObjectUtils.isEmpty(orderRequestObject.getRazorpayId())){
+            throw new BusinessException("razorpay order id not found.");
+        }
+
     }
 }

@@ -5,12 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Data
-public class RazorpayResponseObject {
-    public static final Logger logger = LoggerFactory.getLogger(RazorpayResponseObject.class);
-
+public class OrderResponseObject {
+    public static final Logger logger = LoggerFactory.getLogger(OrderResponseObject.class);
     private Integer amount;
     private String currency;
-    private String id;
+    private String orderId;
     private String entity;
     private Integer amount_paid;
     private Integer amount_due;
@@ -19,4 +18,5 @@ public class RazorpayResponseObject {
     private String status;
     private Integer attempts;
     private String created_at;
+    private Integer customerId;
 }
