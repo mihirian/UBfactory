@@ -147,4 +147,20 @@ public class CustomerServiceImp implements CustomerService {
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
 
     }
-}
+
+    @Override
+    public Response addAddress(AddressRequest request) throws BusinessException {
+        GenricResponse<Customer> response = new GenricResponse<>();
+        Customer customer1 = customerRepository.findByemail(request.getEmail());
+        if (customer1 == null) {
+            throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
+        }
+        customer1.setPinCode(request.getPinCode());
+        customer1.setState(request.getState());
+        customer1.setTown(request.getTown());
+        customer1.setStreetAddress(request.getStreetAddress());
+        customerRepository.save(customer1);
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.SHEEPING_ADDRESS_UPDATE);
+    }
+
+    }

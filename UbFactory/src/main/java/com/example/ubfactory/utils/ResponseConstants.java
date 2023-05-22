@@ -29,6 +29,7 @@ public interface ResponseConstants {
     public static final String INVALID_OTP="Invalid OTP";
     public static final String PASSWORD_RESET="Password reset successfully";
     public static final String EMAIL_ALREADY_EXIST="User already registered with the provided email address.";
+    public static final String SHEEPING_ADDRESS_UPDATE="successfully sheeping address updated";
 
 
 

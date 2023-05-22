@@ -3,10 +3,7 @@ package com.example.ubfactory.controller;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
-import com.example.ubfactory.objects.ChangePasswordRequest;
-import com.example.ubfactory.objects.CustomerObject;
-import com.example.ubfactory.objects.GenricResponse;
-import com.example.ubfactory.objects.ResetPassword;
+import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
@@ -89,7 +86,6 @@ public class CustomerController {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
 
-
     }
 
     @PostMapping("/verify-otp")
@@ -112,6 +108,31 @@ public class CustomerController {
     public ResponseEntity<Object> resetPassword(@RequestBody ResetPassword request) throws BusinessException {
         try {
             Response response = customerService.resetPassword(request);
+            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+        } catch (BusinessException b) {
+            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
+
+    @PostMapping("registration/verification/{email}")
+    public ResponseEntity<Object> registrationVerification(@PathVariable String email) {
+        try {
+            String otp = customerHelper.generateOTP();
+            customerHelper.sendOTPByEmailAddress(email, otp);
+            otpStore.put(email, otp);
+            return GenricResponse.genricResponse(ResponseConstants.MAIL_SEND_SUCCESSFULLY, HttpStatus.OK, null);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
+
+
+    @PostMapping("add/address")
+    public ResponseEntity<Object> addAddress(@RequestBody AddressRequest request) throws BusinessException {
+        try {
+            Response response = customerService.addAddress(request);
             return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
         } catch (BusinessException b) {
             return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);

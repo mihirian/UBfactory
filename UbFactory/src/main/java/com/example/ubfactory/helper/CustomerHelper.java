@@ -54,4 +54,19 @@ public class CustomerHelper {
         message.setText("Dear user,\n\nYou have requested to reset your password. Please use the following verification code to proceed:\n\nVerification Code: " + otp + "\n\nIf you did not initiate this password reset, please ignore this email. Ensure the security of your account and do not share this code with anyone.\n\nThank you,\nThe Support Team");
        javaMailSender.send(message);
     }
+
+    public void sendOTPByEmailAddress(String email, String otp)
+    {
+
+        String subject = "Registration Verification Code";
+        String text = "Dear user,\n\nThank you for registering with our service. Please use the following verification code to complete your registration:\n\nVerification Code: " + otp + "\n\nIf you did not initiate this registration, please ignore this email.\n\nThank you,\nThe Support Team";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(subject);
+        message.setText(text);
+
+        javaMailSender.send(message);
+    }
+
 }
