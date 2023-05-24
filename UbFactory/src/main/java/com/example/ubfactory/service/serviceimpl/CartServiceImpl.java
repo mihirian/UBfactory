@@ -1,17 +1,9 @@
 package com.example.ubfactory.service.serviceimpl;
 
-import com.example.ubfactory.entities.Cart;
-import com.example.ubfactory.entities.CartItem;
-import com.example.ubfactory.entities.Customer;
-import com.example.ubfactory.entities.Product;
+import com.example.ubfactory.entities.*;
 import com.example.ubfactory.helper.CartMapper;
-import com.example.ubfactory.objects.AddCartItemRequest;
-import com.example.ubfactory.objects.CartItemResponse;
-import com.example.ubfactory.objects.CartResponse;
-import com.example.ubfactory.objects.UpdateCartItemRequest;
-import com.example.ubfactory.repository.CartRepository;
-import com.example.ubfactory.repository.CustomerRepository;
-import com.example.ubfactory.repository.ProductRepository;
+import com.example.ubfactory.objects.*;
+import com.example.ubfactory.repository.*;
 import com.example.ubfactory.service.CartService;
 import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @Service
@@ -33,6 +29,10 @@ public class CartServiceImpl implements CartService {
     @Autowired
 
     private ProductRepository productRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
+    @Autowired
+    private ShippingRepository shippingRepository;
 
 
     @Override
@@ -86,6 +86,33 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
+    @Override
+    public CartItemPriceResponse getCartItemsWithShipping(Integer customerId) {
+        CartItemPriceResponse cartItemResponse =new CartItemPriceResponse();
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("cart not found"));
+        List<CartItem> cartItem = cartItemRepository.findAllByCart(cart);
+
+        AtomicReference<BigDecimal> subtotal = new AtomicReference<BigDecimal>(new BigDecimal(0.00));
+        AtomicReference<BigDecimal> price = new AtomicReference<BigDecimal>(new BigDecimal(0.00));
+
+        cartItem.forEach((ele) -> {
+            Product product = ele.getProduct();
+            subtotal.updateAndGet(v -> v.add(ele.getProduct().getOriginalPrice().multiply(BigDecimal.valueOf(ele.getQuantity()))));
+            price.updateAndGet(v->v.add(product.getPrice().multiply(BigDecimal.valueOf(ele.getQuantity()))));
+
+        });
+        BigDecimal  discount = price.get().subtract(subtotal.get());
+        cartItemResponse.setTotalPrice(price.get());
+        cartItemResponse.setDiscount(discount);
+        cartItemResponse.setPrice(subtotal.get());
+        Shipping shipping = shippingRepository.findById(1).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        cartItemResponse.setShippingCharges(String.valueOf(shipping.getCharges()));
+        BigDecimal orderAmount= shipping.getCharges().add(subtotal.get());
+        cartItemResponse.setOrderAmount(orderAmount);
+        return cartItemResponse;
+    }
+
     private Cart createCartForCustomer(Customer customer) {
         Cart cart = new Cart();
         cart.setCustomer(customer);
@@ -96,5 +123,6 @@ public class CartServiceImpl implements CartService {
 
         return cartRepository.save(cart);
     }
+
 
 }

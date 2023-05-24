@@ -1,9 +1,6 @@
 package com.example.ubfactory.controller;
 
-import com.example.ubfactory.objects.AddCartItemRequest;
-import com.example.ubfactory.objects.CartItemResponse;
-import com.example.ubfactory.objects.CartResponse;
-import com.example.ubfactory.objects.UpdateCartItemRequest;
+import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,4 +46,16 @@ public class CartController {
         cartService.deleteCartItem(customerId, itemId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{customerId}/cart")
+    public ResponseEntity<Object> getCartItemsWithShipping(@PathVariable Integer customerId) {
+        try {
+            CartItemPriceResponse response = cartService.getCartItemsWithShipping(customerId);
+             return GenricResponse.genricResponse("Success", HttpStatus.CREATED, response);
+        }
+        catch (Exception e){
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
+
 }

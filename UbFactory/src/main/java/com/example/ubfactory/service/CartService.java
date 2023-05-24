@@ -1,9 +1,6 @@
 package com.example.ubfactory.service;
 
-import com.example.ubfactory.objects.AddCartItemRequest;
-import com.example.ubfactory.objects.CartItemResponse;
-import com.example.ubfactory.objects.CartResponse;
-import com.example.ubfactory.objects.UpdateCartItemRequest;
+import com.example.ubfactory.objects.*;
 
 public interface CartService {
     CartResponse getCartItems(Integer customerId);
@@ -13,4 +10,6 @@ public interface CartService {
     CartItemResponse updateCartItemQuantity(Integer customerId, Integer itemId, UpdateCartItemRequest request);
 
     void deleteCartItem(Integer customerId, Integer itemId);
+
+    CartItemPriceResponse getCartItemsWithShipping(Integer customerId);
 }

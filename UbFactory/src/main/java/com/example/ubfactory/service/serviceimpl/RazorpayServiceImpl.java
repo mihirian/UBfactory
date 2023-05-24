@@ -61,7 +61,7 @@ public class RazorpayServiceImpl implements RazorpayService {
         AtomicReference<BigDecimal> totalPrice = new AtomicReference<BigDecimal>(new BigDecimal(0.00));
         cartItem.forEach((ele) -> {
             Product product = ele.getProduct();
-            BigDecimal price = product.getPrice();
+            BigDecimal price = product.getOriginalPrice();
             Integer quantity = ele.getQuantity();
             BigDecimal currentProdcutTotalPrice = price.multiply(new BigDecimal(quantity));
             totalPrice.updateAndGet(v -> v.add(currentProdcutTotalPrice));
@@ -114,11 +114,11 @@ public class RazorpayServiceImpl implements RazorpayService {
         }
         paymentSummary.setPaymentId(orderRequestObject.getPaymentId());
         paymentRepository.save(paymentSummary);
-
+        int amount = orderRequestObject.getAmount().multiply(new BigDecimal(100)).intValue();
         String url = "https://api.razorpay.com/v1/payments/"+orderRequestObject.getPaymentId()+"/capture";
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JSONObject json = new JSONObject();
-        json.put("amount", orderRequestObject.getAmount());
+        json.put("amount", amount);
         json.put("currency", "INR");
 
         HttpHeaders headers = new HttpHeaders();
