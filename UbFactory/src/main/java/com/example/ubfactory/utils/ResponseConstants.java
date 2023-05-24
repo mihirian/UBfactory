@@ -6,6 +6,9 @@ public interface ResponseConstants {
     public static final String PRODUCT_REGISTERED = "New product added successfully.";
     public static final String PRODUCT_UPDATED = "New product updated successfully.";
     public static final String PRODUCT_DELETED = "New product deleted successfully.";
+    public static final String INVALID_PRODUCT_NAME = "Invalid product name !!";
+    public static final String INVALID_PRODUCT_DISPLAY_NAME = "Invalid product display name !!";
+    public static final String INVALID_IMAGE_URL = "Image url can not be null !!";
     public static final String CUSTOMER_REGISTERED = "You have successfully registered.";
     public static final String FOOD_CATEGORY_NOT_FOUND = "Food category is not found in the request!!";
     public static final String NO_ANY_PRODUCT_FOUND = "No any product found!!";
