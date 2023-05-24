@@ -10,8 +10,10 @@ import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,6 +41,17 @@ public class CustomerController {
     public ResponseEntity<Object> fetchAllCustomerDetail() throws BusinessException {
         try {
             List<CustomerObject> response = customerService.fetchAllCustomerDetail();
+            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+        } catch (BusinessException b) {
+            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
+    @GetMapping("get/customer_byid/{id}")
+    public ResponseEntity<Object> getCustomerDetailById(@PathVariable int id) throws BusinessException {
+        try {
+            Response response = customerService.getCustomerDetailById(id);
             return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
         } catch (BusinessException b) {
             return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);

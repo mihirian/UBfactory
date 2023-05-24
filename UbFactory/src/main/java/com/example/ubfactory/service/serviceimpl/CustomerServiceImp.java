@@ -163,4 +163,17 @@ public class CustomerServiceImp implements CustomerService {
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.SHEEPING_ADDRESS_UPDATE);
     }
 
+    @Override
+    public Response getCustomerDetailById(int id) throws BusinessException
+    {
+        GenricResponse<Customer> response = new GenricResponse<>();
+        Customer customer = customerRepository.findById(id).get();
+        if(customer==null)
+        {
+            throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
+        }
+        return response.createSuccessResponse(customer, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+
     }
+
+}

@@ -24,4 +24,6 @@ public interface CustomerService {
     Response resetPassword(ResetPassword request) throws BusinessException;
 
     Response addAddress(AddressRequest request) throws BusinessException;
+
+    Response getCustomerDetailById(int id) throws BusinessException;
 }
