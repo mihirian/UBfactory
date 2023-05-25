@@ -43,12 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
                 .disable()
-                .authorizeHttpRequests()
+                .authorizeRequests()
                 .antMatchers("/login", "/customer/registration").permitAll()
                 .antMatchers(HttpMethod.GET).permitAll()
                 .antMatchers(HttpMethod.POST).permitAll()
                 .antMatchers(PUBLIC_URLS).permitAll()
-                // Add security rules for specific APIs here
+                .antMatchers(HttpMethod.PUT).permitAll()
                 .antMatchers("/api/secure/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll() // Allow all other requests without authentication
@@ -57,7 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+
         http.addFilterBefore(jwtautheticatorfilter, UsernamePasswordAuthenticationFilter.class);
+
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

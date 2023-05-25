@@ -2,8 +2,11 @@ package com.example.ubfactory.controller;
 
 //import com.razorpay.RazorpayClient;
 //import com.razorpay.RazorpayException;
+import com.example.ubfactory.enums.Status;
+import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.RazorpayService;
+import com.example.ubfactory.utils.Response;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.slf4j.Logger;
@@ -43,6 +46,18 @@ public class OrderController {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
+
+    @GetMapping("billgenrater/{id}")
+    public ResponseEntity<Object> billGenrater(@PathVariable int id) throws BusinessException {
+        try {
+            Response response = razorpayService.billGenrater(id);
+            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
+
+
     }
 
 

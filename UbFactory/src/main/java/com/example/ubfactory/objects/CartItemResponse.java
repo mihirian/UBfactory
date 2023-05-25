@@ -16,6 +16,10 @@ public class CartItemResponse {
     private String productName;
     private BigDecimal price;
     private int quantity;
-
+    private String description;
+    private Integer productId;
+    private String image;
+    private String name;
+    private BigDecimal originalPrice;
     // Getters and setters
 }

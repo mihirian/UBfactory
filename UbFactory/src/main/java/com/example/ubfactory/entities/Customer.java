@@ -13,7 +13,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Customer extends BaseEntity {
+public class Customer extends BaseEntity
+{
+
+
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -32,6 +35,12 @@ public class Customer extends BaseEntity {
     private String password;
     @Column(name = "owner_type", nullable = false)
     private String ownerType;
+    private String streetAddress;
+    private String town;
+    private String state;
+    private String pinCode;
+
+
 
 
     @OneToMany(mappedBy = "customer")

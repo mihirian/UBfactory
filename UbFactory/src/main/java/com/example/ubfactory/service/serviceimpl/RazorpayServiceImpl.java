@@ -8,6 +8,8 @@ import com.example.ubfactory.helper.PaymentHelper;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.repository.*;
 import com.example.ubfactory.service.RazorpayService;
+import com.example.ubfactory.utils.Response;
+import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.OrderVaildator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -51,6 +54,8 @@ public class RazorpayServiceImpl implements RazorpayService {
     private PaymentHelper paymentHelper;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private CartRepository cartRepository;
     @Autowired
     private OrderSummaryRepository orderSummaryRepository;
 
@@ -153,6 +158,31 @@ public class RazorpayServiceImpl implements RazorpayService {
         }
 
         return capturePaymentResponse;
+    }
+
+    @Override
+    public Response billGenrater(int id)
+    {
+        GenricResponse<SheepingResponse> response = new GenricResponse<>();
+        SheepingResponse response1=new SheepingResponse();
+      Cart cart=cartRepository.findByCustomerId(id);
+       List<CartItem> cartList=cartItemRepository.findByCartId(id);
+        BigDecimal subprice = BigDecimal.ZERO;
+
+        for (CartItem item : cartList) {
+            BigDecimal price = item.getProduct().getPrice();
+            subprice = subprice.add(price);
+        }
+        System.out.println(subprice);
+        int sheepingId=1;
+        Optional<Shipping> shipping=shippingRepository.findById(sheepingId);
+          BigDecimal sheepingprice= shipping.get().getCharges();
+          BigDecimal totalPrice=subprice.add(sheepingprice);
+        response1.setSubPrice(subprice);
+        response1.setTotalPrice(totalPrice);
+        response1.setSheepingprice(sheepingprice);
+        return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+
     }
 
 
