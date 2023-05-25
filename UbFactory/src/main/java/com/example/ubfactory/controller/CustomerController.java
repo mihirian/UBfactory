@@ -41,6 +41,7 @@ public class CustomerController {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
+
     @GetMapping("get/customer_byid/{id}")
     public ResponseEntity<Object> getCustomerDetailById(@PathVariable int id) throws BusinessException {
         try {
@@ -79,42 +80,24 @@ public class CustomerController {
     }
 
 
-    private final Map<String, String> otpStore = new ConcurrentHashMap<>();
-
     @PostMapping("forgot-password/{email}")
     public ResponseEntity<Object> forgotPassword(@PathVariable String email) {
         try {
-            String otp = customerHelper.generateOTP();
-            customerHelper.sendOTPByEmail(email, otp);
-            otpStore.put(email, otp);
-            return GenricResponse.genricResponse(ResponseConstants.MAIL_SEND_SUCCESSFULLY, HttpStatus.OK, null);
+            Response response = customerService.forgatePassword(email);
+            return GenricResponse.genricResponse(ResponseConstants.SUCCESS, HttpStatus.OK, null);
+        } catch (BusinessException b) {
+            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
 
     }
 
-    @PostMapping("/verify-otp")
-    public ResponseEntity<Object> verifyOTP(@RequestBody Map<String, String> request) {
+    @PostMapping("forgot/password/verify-otp")
+    public ResponseEntity<Object> forgetPasswordVerifyOtp(@RequestBody ResetPassword request) {
         try {
-            String email = request.get("email");
-            String otp = request.get("otp");
-            String storedOTP = otpStore.get(email);
-            if (storedOTP == null || !storedOTP.equals(otp)) {
-                return ResponseEntity.badRequest().body(ResponseConstants.INVALID_OTP);
-            }
-            otpStore.remove(email);
-            return GenricResponse.genricResponse(ResponseConstants.OTP_VERIFICATION, HttpStatus.OK, null);
-        } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-        }
-    }
-
-    @PostMapping("/reset/password")
-    public ResponseEntity<Object> resetPassword(@RequestBody ResetPassword request) throws BusinessException {
-        try {
-            Response response = customerService.resetPassword(request);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+            Response response = customerService.forgetPasswordVerifyOtp(request);
+            return GenricResponse.genricResponse(ResponseConstants.PASSWORD_RESET, HttpStatus.OK, null);
         } catch (BusinessException b) {
             return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
@@ -149,7 +132,7 @@ public class CustomerController {
     @PostMapping("registration/verify-otp")
     public ResponseEntity<Object> verifyOTP(@RequestBody VerificationRequest request) {
         try {
-           Response response=customerService.verifyOtp(request);
+            Response response = customerService.verifyOtp(request);
             return GenricResponse.genricResponse(ResponseConstants.OTP_VERIFICATION, HttpStatus.OK, null);
         } catch (Exception e) {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);

@@ -126,19 +126,7 @@ public class CustomerServiceImp implements CustomerService {
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.LOGOUT_SUCCESSFULLY);
     }
 
-    @Override
-    public Response resetPassword(ResetPassword request) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
-        Customer customer = customerRepository.findByemail(request.getEmail());
-        if (customer == null) {
-            throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
-        }
-        String newpassword = passwordEncoder.encode(request.getNewPassword());
-        customer.setPassword(newpassword);
-        customerRepository.save(customer);
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
 
-    }
 
     @Override
     public Response addAddress(AddressRequest request) throws BusinessException {
@@ -202,6 +190,39 @@ public class CustomerServiceImp implements CustomerService {
             throw new BusinessException("key not found");
         }
 
+
+    }
+
+    @Override
+    public Response forgatePassword(String email) throws BusinessException
+    {
+        GenricResponse<Customer> response = new GenricResponse<>();
+
+        Customer customer=customerRepository.findByemail(email);
+        if(customer==null)
+        {
+            throw new BusinessException("Email not found");
+        }
+
+        String otp = customerHelper.generateOTP();
+        customerHelper.sendOTPByEmail(email, otp);
+        redisService.populateCache(email,otp,60*10);
+        return response.createSuccessResponse(null,HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
+    }
+
+    @Override
+    public Response forgetPasswordVerifyOtp(ResetPassword request) throws BusinessException {
+        GenricResponse<Customer> response = new GenricResponse<>();
+        String email = request.getEmail();
+        String storedOTP = redisService.getFromCache(email);
+        if (storedOTP == null || !storedOTP.equals(request.getOtp())) {
+            throw new BusinessException(ResponseConstants.INVALID_OTP);
+        }
+        Customer customer = customerRepository.findByemail(email);
+        String newPassword=passwordEncoder.encode(request.getNewPassword());
+        customer.setPassword(newPassword);
+        customerRepository.save(customer);
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
 
     }
 
