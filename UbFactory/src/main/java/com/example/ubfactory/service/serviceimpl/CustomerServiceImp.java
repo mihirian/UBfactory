@@ -2,6 +2,7 @@ package com.example.ubfactory.service.serviceimpl;
 
 import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.entities.Token;
+import com.example.ubfactory.enums.RedisKey;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
 import com.example.ubfactory.objects.*;
@@ -9,11 +10,13 @@ import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
 import com.example.ubfactory.repository.TokenDao;
 import com.example.ubfactory.service.CustomerService;
+import com.example.ubfactory.utils.RedisService;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.CustomerRequestVailidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,19 +40,9 @@ public class CustomerServiceImp implements CustomerService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private TokenDao tokenDao;
+    @Autowired
+    private RedisService redisService;
 
-    @Override
-    public Response<Customer> customerRegistration(CustomerObject request) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
-        Customer customer1=customerRepository.findByemail(request.getEmail());
-        if (customer1 != null) {
-            throw new BusinessException(ResponseConstants.EMAIL_ALREADY_EXIST);
-        }
-        CustomerObject customerObject = cutomerRequestVailidator.validateCutomerRequest(request);
-        Customer customer = customerHelper.getCustomerObject(customerObject);
-        customer = customerRepository.save(customer);
-        return response.createSuccessResponse(customer, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_REGISTERED);
-    }
 
     @Override
     public List<CustomerObject> fetchAllCustomerDetail() throws BusinessException {
@@ -136,12 +129,11 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public Response resetPassword(ResetPassword request) throws BusinessException {
         GenricResponse<Customer> response = new GenricResponse<>();
-        Customer customer=customerRepository.findByemail(request.getEmail());
-        if(customer==null)
-        {
+        Customer customer = customerRepository.findByemail(request.getEmail());
+        if (customer == null) {
             throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
         }
-        String newpassword=passwordEncoder.encode(request.getNewPassword());
+        String newpassword = passwordEncoder.encode(request.getNewPassword());
         customer.setPassword(newpassword);
         customerRepository.save(customer);
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
@@ -164,16 +156,55 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public Response getCustomerDetailById(int id) throws BusinessException
-    {
+    public Response getCustomerDetailById(int id) throws BusinessException {
         GenricResponse<Customer> response = new GenricResponse<>();
         Customer customer = customerRepository.findById(id).get();
-        if(customer==null)
-        {
+        if (customer == null) {
             throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
         }
         return response.createSuccessResponse(customer, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
 
     }
 
+    @Override
+    public Response customerRegistrations(CustomerObject customerObject) {
+        GenricResponse<Customer> response = new GenricResponse<>();
+
+        String email = customerObject.getEmail();
+        String otp = customerHelper.generateOTP();
+        customerHelper.sendOTPByEmailAddress(email, otp);
+        customerObject.setOtp(otp);
+        redisService.populateCache(RedisKey.REGISTRATIONKEY.name()+email, customerObject, 60*10);
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
+
+
+    }
+
+    @Override
+    public Response verifyOtp(VerificationRequest request) throws BusinessException {
+        GenricResponse<Customer> response = new GenricResponse<>();
+        CustomerObject customerObject = null;
+
+        String email = request.getEmail();
+        if (redisService.exists(RedisKey.REGISTRATIONKEY.name()+email)) {
+            customerObject = redisService.lookupCache(RedisKey.REGISTRATIONKEY.name()+email, CustomerObject.class);
+            String storedOTP = customerObject.getOtp();
+            if (storedOTP == null || !storedOTP.equals(request.getOtp())) {
+                throw new BusinessException(ResponseConstants.INVALID_OTP);
+            }
+            Customer customer = customerHelper.getCustomerObject(customerObject);
+            customer = customerRepository.save(customer);
+            redisService.delete(RedisKey.REGISTRATIONKEY.name() + email);
+            return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_REGISTERED);
+
+        }
+        else {
+            throw new BusinessException("key not found");
+        }
+
+
+    }
+
 }
+
+

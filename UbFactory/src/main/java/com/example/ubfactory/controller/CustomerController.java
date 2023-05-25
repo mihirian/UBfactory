@@ -1,10 +1,12 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.enums.RedisKey;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.CustomerService;
+import com.example.ubfactory.utils.RedisService;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +26,9 @@ public class CustomerController {
     private CustomerService customerService;
     @Autowired
     private CustomerHelper customerHelper;
+    @Autowired
+    private RedisService redisService;
 
-    @PostMapping("/customer/registration")
-    public ResponseEntity<Object> customerRegistration(@RequestBody CustomerObject request) throws BusinessException {
-        try {
-            Response response = customerService.customerRegistration(request);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
-        } catch (BusinessException b) {
-            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-        }
-    }
 
     @GetMapping("/fetch/all_customer")
     public ResponseEntity<Object> fetchAllCustomerDetail() throws BusinessException {
@@ -129,12 +122,10 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("registration/verification/{email}")
-    public ResponseEntity<Object> registrationVerification(@PathVariable String email) {
+    @PostMapping("/registration")
+    public ResponseEntity<Object> registrationVerification(@RequestBody CustomerObject customerObject) {
         try {
-            String otp = customerHelper.generateOTP();
-            customerHelper.sendOTPByEmailAddress(email, otp);
-            otpStore.put(email, otp);
+            Response response = customerService.customerRegistrations(customerObject);
             return GenricResponse.genricResponse(ResponseConstants.MAIL_SEND_SUCCESSFULLY, HttpStatus.OK, null);
         } catch (Exception e) {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
@@ -149,6 +140,17 @@ public class CustomerController {
             return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
         } catch (BusinessException b) {
             return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+        } catch (Exception e) {
+            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
+
+
+    @PostMapping("registration/verify-otp")
+    public ResponseEntity<Object> verifyOTP(@RequestBody VerificationRequest request) {
+        try {
+           Response response=customerService.verifyOtp(request);
+            return GenricResponse.genricResponse(ResponseConstants.OTP_VERIFICATION, HttpStatus.OK, null);
         } catch (Exception e) {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }

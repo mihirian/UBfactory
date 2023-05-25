@@ -19,5 +19,6 @@ public class CustomerObject {
     @NotBlank(message = "Password is mandatory")
     private String password;
     private String ownertype;
+    private String otp;
 
 }

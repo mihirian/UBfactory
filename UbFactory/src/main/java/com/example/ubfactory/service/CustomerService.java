@@ -9,8 +9,6 @@ import java.util.List;
 
 @Service
 public interface CustomerService {
-    Response customerRegistration(CustomerObject request) throws BusinessException;
-
 
     List<CustomerObject> fetchAllCustomerDetail() throws BusinessException;
 
@@ -26,4 +24,8 @@ public interface CustomerService {
     Response addAddress(AddressRequest request) throws BusinessException;
 
     Response getCustomerDetailById(int id) throws BusinessException;
+
+    Response customerRegistrations(CustomerObject customerObject);
+
+    Response verifyOtp(VerificationRequest request) throws BusinessException;
 }
