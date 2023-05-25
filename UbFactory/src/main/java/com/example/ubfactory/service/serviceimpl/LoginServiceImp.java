@@ -44,13 +44,25 @@ public class LoginServiceImp implements UserDetailsService
         if (user!=null && email.equals(user.getEmail())) {
             UserDetails userDetails = loadUserByUsername(email);
             String token = this.jwtTokenHelper.generateToken(userDetails);
-            tok.setToken(token);
-            tok.setOwnerId(user.getId());
-            tokenDao.save(tok);
+            tok=tokenDao.findByownerId(user.getId());
+            if (tok == null) {
+                Token newToken = new Token();
+                newToken.setToken(token);
+                newToken.setOwnerId(user.getId());
+                tokenDao.save(newToken);
+            } else {
+                tok.setToken(token);
+                tok.setOwnerId(user.getId());
+                tokenDao.save(tok);
+            }
             loginResponse.setOwnerId(Long.valueOf(user.getId()));
             loginResponse.setOwnerType(user.getOwnerType());
+            loginResponse.setName(user.getFirstName());
+            loginResponse.setMobileNumber(user.getMobile());
+            loginResponse.setEmail(user.getEmail());
             loginResponse.setToken(token);
         }
+
         return loginResponse;
 
     }

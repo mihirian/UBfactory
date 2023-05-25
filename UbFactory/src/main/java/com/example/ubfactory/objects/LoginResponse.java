@@ -7,19 +7,19 @@ public class LoginResponse {
     private String token;
     private String ownerType;
     private Long ownerId;
-    private String message;
-    private String resposneCode;
-    private String reponseMsg;
+    private String name;
+    private String mobileNumber;
+    private String email;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(String token, String ownerType, Long ownerId, String message, String resposneCode, String reponseMsg) {
+    public LoginResponse(String token, String ownerType, Long ownerId, String name, String mobileNumber, String email) {
         this.token = token;
         this.ownerType = ownerType;
         this.ownerId = ownerId;
-        this.message = message;
-        this.resposneCode = resposneCode;
-        this.reponseMsg = reponseMsg;
+        this.name = name;
+        this.mobileNumber = mobileNumber;
+        this.email = email;
     }
 }
