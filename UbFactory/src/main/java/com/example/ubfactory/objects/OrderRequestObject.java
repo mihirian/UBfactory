@@ -14,5 +14,6 @@ public class OrderRequestObject {
     private String paymentId;
     private String razorpayId;
     private String signature;
+    private String ownerType;
 
 }

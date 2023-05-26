@@ -28,7 +28,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -58,27 +61,43 @@ public class RazorpayServiceImpl implements RazorpayService {
     private CartRepository cartRepository;
     @Autowired
     private OrderSummaryRepository orderSummaryRepository;
+    @Autowired
+    CustomerRepository customerRepository;
+    @Autowired
+  private OrderItemRepository orderItemRepository;
 
     @Override
     public OrderResponseObject createOrder(OrderRequestObject orderRequestObject) throws BusinessException {
         Cart cart = orderVaildator.validateOrderRequest(orderRequestObject);
         List<CartItem> cartItem = cartItemRepository.findAllByCart(cart);
+        Shipping shipping = shippingRepository.findById(1).get();
+        OrderSummary orderSummary = orderHelper.createOrderSummary(cart, shipping);
         AtomicReference<BigDecimal> totalPrice = new AtomicReference<BigDecimal>(new BigDecimal(0.00));
+        List<OrderItem> orderItemList =new ArrayList<>();
         cartItem.forEach((ele) -> {
             Product product = ele.getProduct();
             BigDecimal price = product.getOriginalPrice();
             Integer quantity = ele.getQuantity();
+            OrderItem orderItem =new OrderItem();
+            orderItem.setPrice(price);
+            orderItem.setQuantity(quantity);
+            orderItem.setCreatedAt(new Date());
+            orderItem.setUpdatedAt(new Date());
+            orderItem.setProduct(product);
+            orderItem.setOrderSummary(orderSummary);
+            orderItemList.add(orderItem);
             BigDecimal currentProdcutTotalPrice = price.multiply(new BigDecimal(quantity));
             totalPrice.updateAndGet(v -> v.add(currentProdcutTotalPrice));
         });
-        if(orderRequestObject.getAmount().compareTo(totalPrice.get()) !=0){
-           throw new BusinessException("Requested amount and total amount is not equal.");
+        if (orderRequestObject.getAmount().compareTo(totalPrice.get()) != 0) {
+            throw new BusinessException("Requested amount and total amount is not equal.");
         }
         // address shipping pending
-        Shipping shipping = shippingRepository.findById(1).get();
-        OrderSummary orderSummary = orderHelper.createOrderSummary(cart,totalPrice.get(), shipping);
+        orderItemRepository.saveAll(orderItemList);
+        orderSummary.setTotalPrice(totalPrice.get());
+        orderSummaryRepository.save(orderSummary);
         PaymentSummary paymentSummary = paymentHelper.createPaymentSummary(orderSummary);
-         int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
+        int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
 
         String url = "https://api.razorpay.com/v1/orders";
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -101,7 +120,7 @@ public class RazorpayServiceImpl implements RazorpayService {
         orderSummary.setRazorpayId(responseObject.getId());
         orderHelper.postCreateOrder(orderSummary);
         paymentRepository.save(paymentSummary);
-        OrderResponseObject orderResponseObject = orderHelper.getOrderResponse(responseObject,orderSummary);
+        OrderResponseObject orderResponseObject = orderHelper.getOrderResponse(responseObject, orderSummary);
 
         return orderResponseObject;
     }
@@ -110,17 +129,17 @@ public class RazorpayServiceImpl implements RazorpayService {
     public CapturePaymentResponse capturePayment(OrderRequestObject orderRequestObject) throws BusinessException, RazorpayException {
         paymentHelper.validateCapturePayment(orderRequestObject);
         OrderSummary orderSummary = orderSummaryRepository.findByRazorpayId(orderRequestObject.getRazorpayId());
-        if(orderSummary == null){
+        if (orderSummary == null) {
             throw new BusinessException("Order detail not found");
         }
         PaymentSummary paymentSummary = paymentRepository.findByOrderId(orderSummary.getId());
-        if(paymentSummary == null){
+        if (paymentSummary == null) {
             throw new BusinessException("Payment detail not found");
         }
         paymentSummary.setPaymentId(orderRequestObject.getPaymentId());
         paymentRepository.save(paymentSummary);
         int amount = orderRequestObject.getAmount().multiply(new BigDecimal(100)).intValue();
-        String url = "https://api.razorpay.com/v1/payments/"+orderRequestObject.getPaymentId()+"/capture";
+        String url = "https://api.razorpay.com/v1/payments/" + orderRequestObject.getPaymentId() + "/capture";
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JSONObject json = new JSONObject();
         json.put("amount", amount);
@@ -136,20 +155,19 @@ public class RazorpayServiceImpl implements RazorpayService {
         paymentSummary.setCaptureRequest(json.toString());
         CapturePaymentResponse capturePaymentResponse = gson.fromJson(response, CapturePaymentResponse.class);
         paymentSummary.setCaptureResponse(capturePaymentResponse.toString());
-        if(capturePaymentResponse.getStatus().equalsIgnoreCase("captured")){
+        if (capturePaymentResponse.getStatus().equalsIgnoreCase("captured")) {
             paymentSummary.setPaymentStatus(Status.SUCCESS.getStatus());
             orderSummary.setOrderStatus(Status.SUCCESS.getStatus());
             orderSummary.setPaymentStatus(Status.SUCCESS.getStatus());
             paymentRepository.save(paymentSummary);
             orderSummaryRepository.save(orderSummary);
-        }
-        else if(capturePaymentResponse.getError() != null || capturePaymentResponse.getError_code() != null){
+        } else if (capturePaymentResponse.getError() != null || capturePaymentResponse.getError_code() != null) {
             paymentSummary.setPaymentStatus(Status.FAILURE.getStatus());
             orderSummary.setOrderStatus(Status.FAILURE.getStatus());
             orderSummary.setPaymentStatus(Status.FAILURE.getStatus());
             paymentRepository.save(paymentSummary);
             orderSummaryRepository.save(orderSummary);
-        }else {
+        } else {
             paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
             orderSummary.setOrderStatus(Status.PENDING.getStatus());
             orderSummary.setPaymentStatus(Status.PENDING.getStatus());
@@ -161,12 +179,11 @@ public class RazorpayServiceImpl implements RazorpayService {
     }
 
     @Override
-    public Response billGenrater(int id)
-    {
+    public Response billGenrater(int id) {
         GenricResponse<SheepingResponse> response = new GenricResponse<>();
-        SheepingResponse response1=new SheepingResponse();
-      Cart cart=cartRepository.findByCustomerId(id);
-       List<CartItem> cartList=cartItemRepository.findByCartId(id);
+        SheepingResponse response1 = new SheepingResponse();
+        Cart cart = cartRepository.findByCustomerId(id);
+        List<CartItem> cartList = cartItemRepository.findByCartId(id);
         BigDecimal subprice = BigDecimal.ZERO;
 
         for (CartItem item : cartList) {
@@ -174,10 +191,10 @@ public class RazorpayServiceImpl implements RazorpayService {
             subprice = subprice.add(price);
         }
         System.out.println(subprice);
-        int sheepingId=1;
-        Optional<Shipping> shipping=shippingRepository.findById(sheepingId);
-          BigDecimal sheepingprice= shipping.get().getCharges();
-          BigDecimal totalPrice=subprice.add(sheepingprice);
+        int sheepingId = 1;
+        Optional<Shipping> shipping = shippingRepository.findById(sheepingId);
+        BigDecimal sheepingprice = shipping.get().getCharges();
+        BigDecimal totalPrice = subprice.add(sheepingprice);
         response1.setSubPrice(subprice);
         response1.setTotalPrice(totalPrice);
         response1.setSheepingprice(sheepingprice);
@@ -185,5 +202,49 @@ public class RazorpayServiceImpl implements RazorpayService {
 
     }
 
+    @Override
+
+
+    public OrderHistoryResponse orderhistory(OrderRequestObject orderRequestObject) throws BusinessException {
+       OrderHistoryResponse historyResponse = new OrderHistoryResponse();
+        if (orderRequestObject.getOwnerType() != "ADMIN" && orderRequestObject.getCustomerId() != 0) {
+//            Customer customer = customerRepository.findById(orderRequestObject.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+//            Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+//            List<CartItem> cartItems = cartItemRepository.findAllByCart(cart);
+            List<OrderSummary> orderSummary = orderSummaryRepository.findAllByCustomerId(orderRequestObject.getCustomerId());
+            if (orderSummary == null) {
+                throw new BusinessException("Order history not found");
+            }
+//            OrderHistoryResponse historyItem = new OrderHistoryResponse();
+            List<OrderHistoryResponse> orderHistoryItems = new ArrayList<>();
+            for (OrderSummary orderSummary1 : orderSummary) {
+                OrderHistoryResponse historyItem = new OrderHistoryResponse();
+                historyItem.setPaymentStatus(orderSummary1.getPaymentStatus());
+                historyItem.setOrderStatus(orderSummary1.getOrderStatus());
+                historyItem.setOrderAmount(orderSummary1.getTotalPrice());
+                historyItem.setCustomerId(orderSummary1.getCustomer().getId());
+                historyItem.setOrderId(orderSummary1.getId());
+                // Get product details for each order summary
+                List<OrderItem> orderItemList = orderItemRepository.findAllByOrderSummary(orderSummary1);
+                List<ProductObject> orderProducts = new ArrayList<>();
+                for (OrderItem orderItem : orderItemList) {
+                    ProductObject orderProduct = new ProductObject();
+                        orderProduct.setName(orderItem.getProduct().getName());
+                        orderProduct.setStockQuantity(orderItem.getQuantity());
+                        orderProduct.setPrice(orderItem.getProduct().getOriginalPrice());
+                        orderProduct.setImageUrl(orderItem.getProduct().getImageUrl());
+                        orderProduct.setProductId(orderItem.getProduct().getId());
+                        orderProducts.add(orderProduct);
+                }
+
+                historyItem.setProducts(orderProducts);
+                orderHistoryItems.add(historyItem);
+            }
+//              orderHistoryItems.add(historyItem);
+            historyResponse.setOrderHistoryItems(orderHistoryItems);
+        }
+
+        return historyResponse;
+    }
 
 }

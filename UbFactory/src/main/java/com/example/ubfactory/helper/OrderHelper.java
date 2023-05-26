@@ -24,10 +24,10 @@ public class OrderHelper {
     public void calculatePriceWithQuantity(CartItem cartItem, Optional<Product> product) {
     }
 
-    public OrderSummary createOrderSummary(Cart cart, BigDecimal totalPrice , Shipping shipping) {
+    public OrderSummary createOrderSummary(Cart cart, Shipping shipping) {
         OrderSummary orderSummary = new OrderSummary();
         orderSummary.setCustomer(cart.getCustomer());
-        orderSummary.setTotalPrice(totalPrice);
+//        orderSummary.setTotalPrice(totalPrice);
         orderSummary.setOrderStatus(Status.INITIATED.getStatus());
         orderSummary.setPaymentStatus(Status.INITIATED.getStatus());
         orderSummary.setCreatedAt(new Date());
@@ -59,4 +59,11 @@ public class OrderHelper {
         orderSummary.setPaymentStatus(Status.PENDING.getStatus());
         orderSummaryRepository.save(orderSummary);
     }
+
+//    public OrderItem createOrderItem(CartItem cartItem) {
+//        OrderItem orderItem =new OrderItem();
+//        orderItem.setCreatedAt(new Date());
+//        orderItem.setUpdatedAt(new Date());
+//
+//    }
 }
