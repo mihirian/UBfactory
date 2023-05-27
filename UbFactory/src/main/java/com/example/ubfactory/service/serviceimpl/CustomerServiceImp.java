@@ -14,6 +14,7 @@ import com.example.ubfactory.utils.RedisService;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.CustomerRequestVailidator;
+import com.google.maps.model.LatLng;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -127,19 +128,25 @@ public class CustomerServiceImp implements CustomerService {
     }
 
 
-
     @Override
-    public Response addAddress(AddressRequest request) throws BusinessException {
+    public Response addAddress(AddressRequest request) throws Exception {
         GenricResponse<Customer> response = new GenricResponse<>();
         Customer customer1 = customerRepository.findByemail(request.getEmail());
         if (customer1 == null) {
             throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
         }
+        Double distence = customerHelper.getLatLngFromZipCode(Double.parseDouble(request.getLat()), Double.parseDouble(request.getLon()));
         customer1.setPinCode(request.getPinCode());
         customer1.setState(request.getState());
         customer1.setTown(request.getTown());
         customer1.setStreetAddress(request.getStreetAddress());
-        customerRepository.save(customer1);
+        if (distence <= 6) {
+            customer1.setIsDeliverable(true);
+            customerRepository.save(customer1);
+        } else {
+            customer1.setIsDeliverable(false);
+            customerRepository.save(customer1);
+        }
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.SHEEPING_ADDRESS_UPDATE);
     }
 
@@ -162,7 +169,7 @@ public class CustomerServiceImp implements CustomerService {
         String otp = customerHelper.generateOTP();
         customerHelper.sendOTPByEmailAddress(email, otp);
         customerObject.setOtp(otp);
-        redisService.populateCache(RedisKey.REGISTRATIONKEY.name()+email, customerObject, 60*10);
+        redisService.populateCache(RedisKey.REGISTRATIONKEY.name() + email, customerObject, 60 * 10);
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
 
 
@@ -174,8 +181,8 @@ public class CustomerServiceImp implements CustomerService {
         CustomerObject customerObject = null;
 
         String email = request.getEmail();
-        if (redisService.exists(RedisKey.REGISTRATIONKEY.name()+email)) {
-            customerObject = redisService.lookupCache(RedisKey.REGISTRATIONKEY.name()+email, CustomerObject.class);
+        if (redisService.exists(RedisKey.REGISTRATIONKEY.name() + email)) {
+            customerObject = redisService.lookupCache(RedisKey.REGISTRATIONKEY.name() + email, CustomerObject.class);
             String storedOTP = customerObject.getOtp();
             if (storedOTP == null || !storedOTP.equals(request.getOtp())) {
                 throw new BusinessException(ResponseConstants.INVALID_OTP);
@@ -185,8 +192,7 @@ public class CustomerServiceImp implements CustomerService {
             redisService.delete(RedisKey.REGISTRATIONKEY.name() + email);
             return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_REGISTERED);
 
-        }
-        else {
+        } else {
             throw new BusinessException("key not found");
         }
 
@@ -194,20 +200,18 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public Response forgatePassword(String email) throws BusinessException
-    {
+    public Response forgatePassword(String email) throws BusinessException {
         GenricResponse<Customer> response = new GenricResponse<>();
 
-        Customer customer=customerRepository.findByemail(email);
-        if(customer==null)
-        {
+        Customer customer = customerRepository.findByemail(email);
+        if (customer == null) {
             throw new BusinessException("Email not found");
         }
 
         String otp = customerHelper.generateOTP();
         customerHelper.sendOTPByEmail(email, otp);
-        redisService.populateCache(email,otp,60*10);
-        return response.createSuccessResponse(null,HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
+        redisService.populateCache(email, otp, 60 * 10);
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
     }
 
     @Override
@@ -219,7 +223,7 @@ public class CustomerServiceImp implements CustomerService {
             throw new BusinessException(ResponseConstants.INVALID_OTP);
         }
         Customer customer = customerRepository.findByemail(email);
-        String newPassword=passwordEncoder.encode(request.getNewPassword());
+        String newPassword = passwordEncoder.encode(request.getNewPassword());
         customer.setPassword(newPassword);
         customerRepository.save(customer);
         return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);

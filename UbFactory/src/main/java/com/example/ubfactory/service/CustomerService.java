@@ -21,7 +21,7 @@ public interface CustomerService {
 
 
 
-    Response addAddress(AddressRequest request) throws BusinessException;
+    Response addAddress(AddressRequest request) throws Exception;
 
     Response getCustomerDetailById(int id) throws BusinessException;
 

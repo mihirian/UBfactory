@@ -39,6 +39,7 @@ public class Customer extends BaseEntity
     private String town;
     private String state;
     private String pinCode;
+    private Boolean isDeliverable;
 
 
 

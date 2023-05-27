@@ -1,5 +1,4 @@
 package com.example.ubfactory.helper;
-
 import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
@@ -20,7 +19,6 @@ public class CustomerHelper {
     private CustomerRepository customerRepository;
     @Autowired
     private JavaMailSender javaMailSender;
-
 
     public Customer getCustomerObject(CustomerObject cutomerObject) {
         Customer customer = new Customer();
@@ -68,5 +66,20 @@ public class CustomerHelper {
 
         javaMailSender.send(message);
     }
+    public Double getLatLngFromZipCode(double lat1,double lon1) throws Exception {
+        double lat2 = 12.9389019;
+        double lon2 = 77.7292245;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
 
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double distance = 6371 * c;
+        System.out.println("Distance in KM "+distance);
+
+        return distance;
+    }
 }
