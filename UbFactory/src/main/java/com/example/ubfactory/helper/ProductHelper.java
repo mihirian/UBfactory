@@ -8,15 +8,16 @@ import com.example.ubfactory.objects.ProductObject;
 import com.example.ubfactory.repository.CategoryRepository;
 import com.example.ubfactory.repository.ProductRepository;
 import com.example.ubfactory.utils.ResponseConstants;
+import io.lettuce.core.GeoArgs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ProductHelper {
@@ -68,6 +69,7 @@ public class ProductHelper {
         product.setStockQuantity(productObject.getStockQuantity());
         product.setCreatedAt(new Date());
         product.setUpdatedAt(new Date());
+        product.setSerialNumber(productObject.getSerialNumber());
         productRepository.save(product);
         return product;
     }
@@ -90,7 +92,14 @@ public class ProductHelper {
             productObject.setOriginalPrice(product.getOriginalPrice());
             productObject.setStockQuantity(product.getStockQuantity());
             productObject.setCreatedDate(product.getCreatedAt());
+            productObject.setSerialNumber(product.getSerialNumber());
+
             productObjectList.add(productObject);
+        });
+        Collections.sort(productObjectList, new Comparator<ProductObject>(){
+            public int compare(ProductObject po1, ProductObject po2){
+                return po1.getSerialNumber() - po2.getSerialNumber();
+            }
         });
         return productObjectList;
     }
@@ -167,6 +176,8 @@ public class ProductHelper {
             product.setImageUrl(productObject.getImageUrl());
         if (productObject.getStockQuantity() != null)
             product.setStockQuantity(productObject.getStockQuantity());
+        if(productObject.getSerialNumber() != null)
+            product.setSerialNumber(productObject.getSerialNumber());
         product.setUpdatedAt(new Date());
         product = productRepository.save(product);
         ProductObject objectFromEntity = getObjectFromEntity(product);

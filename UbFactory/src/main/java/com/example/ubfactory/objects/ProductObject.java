@@ -17,6 +17,8 @@ public class ProductObject {
     @NotBlank(message = "Name can not blank or null")
     private String name;
 
+    private Integer serialNumber;
+
     private String displayName;
 
     private String description;

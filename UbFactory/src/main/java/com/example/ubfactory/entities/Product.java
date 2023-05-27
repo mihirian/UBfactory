@@ -17,6 +17,9 @@ public class Product extends BaseEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "serial_number",nullable = false)
+    private Integer serialNumber;
+
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 

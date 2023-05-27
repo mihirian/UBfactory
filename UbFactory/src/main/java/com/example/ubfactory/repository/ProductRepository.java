@@ -13,4 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     public Product findByName(String name);
 
+
+
+
 }
