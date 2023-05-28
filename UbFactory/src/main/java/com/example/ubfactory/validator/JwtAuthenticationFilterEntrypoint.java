@@ -13,7 +13,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilterEntrypoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access denied !!");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access dinied !!");
     }
 }
 
