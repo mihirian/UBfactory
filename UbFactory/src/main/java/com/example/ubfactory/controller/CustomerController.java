@@ -109,7 +109,7 @@ public class CustomerController {
     public ResponseEntity<Object> registrationVerification(@RequestBody CustomerObject customerObject) {
         try {
             Response response = customerService.customerRegistrations(customerObject);
-            return GenricResponse.genricResponse(ResponseConstants.MAIL_SEND_SUCCESSFULLY, HttpStatus.OK, null);
+            return GenricResponse.genricResponse(ResponseConstants.SUCCESS, HttpStatus.OK, null);
         } catch (Exception e) {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
