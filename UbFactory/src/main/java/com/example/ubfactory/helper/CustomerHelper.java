@@ -1,5 +1,7 @@
 package com.example.ubfactory.helper;
 import com.example.ubfactory.entities.Customer;
+import com.example.ubfactory.entities.CustomerCopy;
+import com.example.ubfactory.objects.AddressRequest;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,17 +22,15 @@ public class CustomerHelper {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public Customer getCustomerObject(CustomerObject cutomerObject) {
+    public Customer getCustomerObject(CustomerCopy cutomerObject) {
         Customer customer = new Customer();
         customer.setFirstName(cutomerObject.getFirstName());
         customer.setLastName(cutomerObject.getLastName());
         customer.setMobile(cutomerObject.getMobile());
         customer.setEmail(cutomerObject.getEmail());
         String encodedPassword = passwordEncoder.encode(cutomerObject.getPassword());
-        customer.setOwnerType(cutomerObject.getOwnertype());
+        customer.setOwnerType(cutomerObject.getOwnerType());
         customer.setPassword(encodedPassword);
-        customer.setCreatedAt(new Date());
-        customer.setUpdatedAt(new Date());
         return customer;
     }
 
@@ -82,4 +82,20 @@ public class CustomerHelper {
 
         return distance;
     }
+
+    public CustomerCopy getCustomerObjectCopy(CustomerObject customerObject)
+    {
+        CustomerCopy customer = new CustomerCopy();
+        customer.setFirstName(customerObject.getFirstName());
+        customer.setLastName(customerObject.getLastName());
+        customer.setMobile(customerObject.getMobile());
+        customer.setEmail(customerObject.getEmail());
+        String encodedPassword = passwordEncoder.encode(customerObject.getPassword());
+        customer.setPassword(encodedPassword);
+        customer.setOtp(customerObject.getOtp());
+        customer.setOwnerType(customerObject.getOwnertype());
+        return customer;
+    }
+
+
 }

@@ -1,9 +1,12 @@
 package com.example.ubfactory.validator;
 
 import com.example.ubfactory.exception.BusinessException;
+import com.example.ubfactory.objects.AddressRequest;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.stereotype.Component;
+
+import javax.swing.*;
 
 @Component
 public class CustomerRequestVailidator {
@@ -24,6 +27,24 @@ public class CustomerRequestVailidator {
         if (request.getMobile().isBlank()) {
             throw new BusinessException(1105, ResponseConstants.INVAILID_MOBILE_NUMBER);
         }
+        return request;
+    }
+
+    public AddressRequest validateAddressRequest(AddressRequest request) throws BusinessException {
+        if(request==null)
+        {
+            throw new BusinessException(ResponseConstants.INVAILID_REQUEST);
+        }
+        if(request.getPinCode().isBlank())
+        {
+            throw new BusinessException("Please enter the pin code");
+        }
+        if(request.getLat().isBlank()& request.getLon().isBlank())
+        {
+            throw new BusinessException("lat long not found");
+        }
+
+
         return request;
     }
 }

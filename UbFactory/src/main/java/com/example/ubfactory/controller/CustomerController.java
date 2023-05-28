@@ -84,7 +84,7 @@ public class CustomerController {
     public ResponseEntity<Object> forgotPassword(@PathVariable String email) {
         try {
             Response response = customerService.forgatePassword(email);
-            return GenricResponse.genricResponse(ResponseConstants.SUCCESS, HttpStatus.OK, null);
+            return GenricResponse.genricResponse(ResponseConstants.MAIL_SEND_SUCCESSFULLY, HttpStatus.OK, null);
         } catch (BusinessException b) {
             return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
@@ -133,7 +133,9 @@ public class CustomerController {
     public ResponseEntity<Object> verifyOTP(@RequestBody VerificationRequest request) {
         try {
             Response response = customerService.verifyOtp(request);
-            return GenricResponse.genricResponse(ResponseConstants.OTP_VERIFICATION, HttpStatus.OK, null);
+            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, null);
+        } catch (BusinessException b) {
+            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
