@@ -7,7 +7,6 @@ import com.example.ubfactory.entities.Token;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
 import com.example.ubfactory.objects.*;
-import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerCopyRepo;
 import com.example.ubfactory.repository.CustomerRepository;
 import com.example.ubfactory.repository.ForgotPasswordRepo;
@@ -136,7 +135,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public Response addAddress(AddressRequest request) throws Exception {
         GenericResponse<Customer> response = new GenericResponse<>();
-        AddressRequest request1=cutomerRequestVailidator.validateAddressRequest(request);
+        AddressRequest request1 = cutomerRequestVailidator.validateAddressRequest(request);
 
         Customer customer1 = customerRepository.findByemail(request.getEmail());
         if (customer1 == null) {
@@ -212,9 +211,8 @@ public class CustomerServiceImp implements CustomerService {
         CustomerObject customerObject = null;
 
         CustomerCopy customerCopy = customerCopyRepo.findByemail(request.getEmail());
-        Customer customer1=customerRepository.findByemail(request.getEmail());
-        if(customer1!=null)
-        {
+        Customer customer1 = customerRepository.findByemail(request.getEmail());
+        if (customer1 != null) {
             throw new BusinessException("Please log in with your existing account or use a different email address for new registrations");
         }
         String givenTime = String.valueOf(customerCopy.getUpdatedAt()) + 0 + 0 + 0;

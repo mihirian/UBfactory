@@ -1,6 +1,5 @@
 package com.example.ubfactory.entities;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

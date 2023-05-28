@@ -1,7 +1,7 @@
 package com.example.ubfactory.helper;
+
 import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.entities.CustomerCopy;
-import com.example.ubfactory.objects.AddressRequest;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.repository.CustomerRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -10,8 +10,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class CustomerHelper {
@@ -35,26 +33,23 @@ public class CustomerHelper {
     }
 
 
-    public String generateOTP()
-    {
+    public String generateOTP() {
         int otpLength = 6; // Length of the OTP
         boolean useLetters = false; // Use only digits
         boolean useNumbers = true;
         return RandomStringUtils.random(otpLength, useLetters, useNumbers);
     }
 
-    public void sendOTPByEmail(String email, String otp)
-    {
+    public void sendOTPByEmail(String email, String otp) {
         SimpleMailMessage message
                 = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Password Reset Verification Code");
         message.setText("Dear user,\n\nYou have requested to reset your password. Please use the following verification code to proceed:\n\nVerification Code: " + otp + "\n\nIf you did not initiate this password reset, please ignore this email. Ensure the security of your account and do not share this code with anyone.\n\nThank you,\nThe Support Team");
-       javaMailSender.send(message);
+        javaMailSender.send(message);
     }
 
-    public void sendOTPByEmailAddress(String email, String otp)
-    {
+    public void sendOTPByEmailAddress(String email, String otp) {
 
         String subject = "Registration Verification Code";
         String text = "Dear user,\n\nThank you for registering with our service. Please use the following verification code to complete your registration:\n\nVerification Code: " + otp + "\n\nIf you did not initiate this registration, please ignore this email.\n\nThank you,\nThe Support Team";
@@ -66,7 +61,8 @@ public class CustomerHelper {
 
         javaMailSender.send(message);
     }
-    public Double getLatLngFromZipCode(double lat1,double lon1) throws Exception {
+
+    public Double getLatLngFromZipCode(double lat1, double lon1) throws Exception {
         double lat2 = 12.9389019;
         double lon2 = 77.7292245;
         double dLat = Math.toRadians(lat2 - lat1);
@@ -78,13 +74,12 @@ public class CustomerHelper {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         double distance = 6371 * c;
-        System.out.println("Distance in KM "+distance);
+        System.out.println("Distance in KM " + distance);
 
         return distance;
     }
 
-    public CustomerCopy getCustomerObjectCopy(CustomerObject customerObject)
-    {
+    public CustomerCopy getCustomerObjectCopy(CustomerObject customerObject) {
         CustomerCopy customer = new CustomerCopy();
         customer.setFirstName(customerObject.getFirstName());
         customer.setLastName(customerObject.getLastName());

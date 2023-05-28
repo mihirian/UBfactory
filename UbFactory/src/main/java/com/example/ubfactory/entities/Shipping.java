@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "shipping")

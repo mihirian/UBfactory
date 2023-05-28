@@ -1,9 +1,11 @@
 package com.example.ubfactory.controller;
 
 import com.example.ubfactory.enums.Status;
-import com.example.ubfactory.helper.JwtTokenHelper;
 import com.example.ubfactory.exception.BusinessException;
-import com.example.ubfactory.objects.*;
+import com.example.ubfactory.helper.JwtTokenHelper;
+import com.example.ubfactory.objects.GenericResponse;
+import com.example.ubfactory.objects.LoginRequest;
+import com.example.ubfactory.objects.LoginResponse;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.service.serviceimpl.LoginServiceImp;
 import com.example.ubfactory.utils.Response;
@@ -17,20 +19,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class LoginController
-{
+public class LoginController {
     @Autowired
     private CustomerService customerService;
     @Autowired
     private LoginServiceImp userDetailsSer;
     @Autowired
-    private JwtTokenHelper  jwtHelper;
+    private JwtTokenHelper jwtHelper;
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<Object> generateToken(@RequestBody LoginRequest request) throws Exception {
         try {
-            this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),(request.getPassword())));
+            this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), (request.getPassword())));
         } catch (UsernameNotFoundException e) {
             e.printStackTrace();
             throw new Exception("Badcredential");
@@ -45,7 +47,7 @@ public class LoginController
     @GetMapping("logout/{ownerId}")
     public ResponseEntity<Object> logout(@PathVariable Integer ownerId) throws BusinessException {
         try {
-            Response response= customerService.logout(ownerId);
+            Response response = customerService.logout(ownerId);
             return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
         } catch (BusinessException b) {
             return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);

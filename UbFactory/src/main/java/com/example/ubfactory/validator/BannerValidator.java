@@ -1,6 +1,5 @@
 package com.example.ubfactory.validator;
 
-import com.example.ubfactory.entities.Banner;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.BannerObject;
 import org.slf4j.Logger;

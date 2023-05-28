@@ -12,7 +12,7 @@ public interface ProductService {
 
     public ProductObject getProductByName(String name) throws ProductException;
 
-    public List<ProductObject> getAllProducts() throws  ProductException;
+    public List<ProductObject> getAllProducts() throws ProductException;
 
     public List<ProductObject> getAllProductsByCategoryName(String name) throws ProductException;
 

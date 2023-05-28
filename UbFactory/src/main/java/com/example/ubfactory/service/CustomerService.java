@@ -20,7 +20,6 @@ public interface CustomerService {
     Response logout(Integer ownerId) throws BusinessException;
 
 
-
     Response addAddress(AddressRequest request) throws Exception;
 
     Response getCustomerDetailById(int id) throws BusinessException;

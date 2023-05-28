@@ -6,14 +6,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedEntityGraph;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ForgotPassword extends BaseEntity
-{
+public class ForgotPassword extends BaseEntity {
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "otp", nullable = false)

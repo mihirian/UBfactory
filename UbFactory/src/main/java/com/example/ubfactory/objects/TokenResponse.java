@@ -5,8 +5,7 @@ import lombok.Data;
 import javax.persistence.Id;
 
 @Data
-public class TokenResponse
-{
+public class TokenResponse {
     @Id
     private int id;
     private int ownerId;

@@ -14,8 +14,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "Customer_Copy")
-public class CustomerCopy extends BaseEntity
-{
+public class CustomerCopy extends BaseEntity {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 

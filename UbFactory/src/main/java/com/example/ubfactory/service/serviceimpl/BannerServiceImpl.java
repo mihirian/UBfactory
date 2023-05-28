@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,18 +36,18 @@ public class BannerServiceImpl implements BannerService {
         bannerObject.setUpdateAt(new Date());
         Banner bannerEntity = bannerHelper.bannerObjToEntity(bannerObject);
         bannerRepository.save(bannerEntity);
-       BannerObject object = bannerHelper.entityToBannerObj(bannerEntity);
+        BannerObject object = bannerHelper.entityToBannerObj(bannerEntity);
         return object;
     }
 
     @Override
     public List<BannerObject> getBannerList() throws BusinessException {
-       List<Banner> bannerList = bannerRepository.findBannerListBystartDate(new Date());
-       if(CollectionUtils.isEmpty(bannerList)){
-           throw new BusinessException("Banner list is empty for date:-" + new Date());
+        List<Banner> bannerList = bannerRepository.findBannerListBystartDate(new Date());
+        if (CollectionUtils.isEmpty(bannerList)) {
+            throw new BusinessException("Banner list is empty for date:-" + new Date());
         }
         List<BannerObject> responseList = bannerList.stream().map(banner -> {
-            BannerObject bannerObject =new BannerObject();
+            BannerObject bannerObject = new BannerObject();
             bannerObject.setUrl(banner.getUrl());
             bannerObject.setName(banner.getName());
             bannerObject.setStatus(banner.getStatus());
