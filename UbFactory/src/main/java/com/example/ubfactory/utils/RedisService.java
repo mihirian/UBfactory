@@ -4,27 +4,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 @Service
-public class RedisService
-{
+public class RedisService {
     //@Autowired
-    private  JedisPool jedisPool;
-    private  ObjectMapper objectMapper;
+    private JedisPool jedisPool;
+    private ObjectMapper objectMapper;
     private final String lockKeyPrefix = "STOCK_LOCK_";
     private final String minutePattern = "yyyy-MM-dd-HH-mm";
     public static final int MILLISECONDS_TO_SLEEP_FOR_LOCK_RETRY = 1000;
-   // RedisService() {
-   //     this.objectMapper = new ObjectMapper();
-   // }
-    public RedisService()
-    {
+
+    // RedisService() {
+    //     this.objectMapper = new ObjectMapper();
+    // }
+    public RedisService() {
         try {
             JedisPoolConfig poolConfig = new JedisPoolConfig();
             // Default : 8, consider how many concurrent connections into Redis you will need under load
@@ -185,8 +184,7 @@ public class RedisService
         }
     }
 
-    public String getFromCache(String key)
-    {
+    public String getFromCache(String key) {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.get(key);
         } catch (Throwable e) {

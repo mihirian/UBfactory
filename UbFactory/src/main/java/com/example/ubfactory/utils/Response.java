@@ -21,4 +21,5 @@ public class Response<T> implements Serializable {
     private String responseMessage;
     private String status;
     private String comments;
-    private Throwable throwable;}
+    private Throwable throwable;
+}

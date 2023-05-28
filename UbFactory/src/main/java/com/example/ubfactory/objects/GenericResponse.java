@@ -18,21 +18,21 @@ public class GenericResponse<T> {
         return new ResponseEntity<Object>(map, status);
     }
 
-    public Response<T> createSuccessResponse(T responseObject, Integer responseCode, String responseMessage){
+    public Response<T> createSuccessResponse(T responseObject, Integer responseCode, String responseMessage) {
         Response<T> response = new Response();
-        if(responseObject != null) {
+        if (responseObject != null) {
             response.setData(responseObject);
         }
         response.setStatus(ResponseConstants.SUCCESS);
-        if(responseCode != null){
+        if (responseCode != null) {
             response.setResponseCode(responseCode);
             response.setResponseMessage(responseMessage);
         }
-        return  response;
+        return response;
 
     }
 
-    public  Response<T> createErrorResponse(Integer errorCode,String errorMessage) {
+    public Response<T> createErrorResponse(Integer errorCode, String errorMessage) {
         Response response = new Response();
         response.setResponseMessage(errorMessage);
         response.setResponseCode(errorCode);
@@ -40,14 +40,15 @@ public class GenericResponse<T> {
         return response;
     }
 
-    public  Response<T> createErrorResponseWithPayload(Integer errorCode,T errorMessage) {
+    public Response<T> createErrorResponseWithPayload(Integer errorCode, T errorMessage) {
         Response response = new Response();
         response.setData(errorMessage);
         response.setResponseCode(errorCode);
         response.setStatus(ResponseConstants.FAILURE);
         return response;
     }
-    public  Response<T> createErrorResponse(Integer errorCode,String errorMessage, Throwable th) {
+
+    public Response<T> createErrorResponse(Integer errorCode, String errorMessage, Throwable th) {
         Response response = new Response();
         response.setResponseMessage(errorMessage);
         response.setResponseCode(errorCode);
@@ -57,11 +58,11 @@ public class GenericResponse<T> {
         return response;
     }
 
-    public Response<T> createSuccessListResponse( List<T> responseObject ){
+    public Response<T> createSuccessListResponse(List<T> responseObject) {
         Response<T> response = new Response();
         response.setListData(responseObject);
         response.setStatus(ResponseConstants.SUCCESS);
-        return  response;
+        return response;
 
     }
 }

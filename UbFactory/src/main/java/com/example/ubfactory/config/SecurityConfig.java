@@ -24,14 +24,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true)// is used for role permission
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-            public static final String []PUBLIC_URLS=
-                {
-                        "/v3/api-docs",
-                        "/v2/api-docs",
-                        "/swaggeimplements UserDetailsService r_resources/**",
-                        "/swagger_ui/**",
-                        "/webjar/**"
-                };
+    public static final String[] PUBLIC_URLS =
+            {
+                    "/v3/api-docs",
+                    "/v2/api-docs",
+                    "/swaggeimplements UserDetailsService r_resources/**",
+                    "/swagger_ui/**",
+                    "/webjar/**"
+            };
     @Autowired
     private LoginServiceImp userDetailsService;
 
@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationFilter jwtautheticatorfilter;
     @Autowired
     private JwtAuthenticationFilterEntrypoint jwtAuthenticationFilterEntryPoint;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
@@ -61,14 +62,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtautheticatorfilter, UsernamePasswordAuthenticationFilter.class);
 
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
 

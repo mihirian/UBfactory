@@ -2,9 +2,13 @@ package com.example.ubfactory.controller;
 
 //import com.razorpay.RazorpayClient;
 //import com.razorpay.RazorpayException;
+
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
-import com.example.ubfactory.objects.*;
+import com.example.ubfactory.objects.CapturePaymentResponse;
+import com.example.ubfactory.objects.GenericResponse;
+import com.example.ubfactory.objects.OrderRequestObject;
+import com.example.ubfactory.objects.OrderResponseObject;
 import com.example.ubfactory.service.RazorpayService;
 import com.example.ubfactory.utils.Response;
 import org.slf4j.Logger;
@@ -25,16 +29,16 @@ public class OrderController {
     @PostMapping("/create-order")
 
     //create order
-     public ResponseEntity<?> createOrder(@RequestBody OrderRequestObject orderRequestObject) {
-         try {
-             OrderResponseObject requestObject = razorpayService.createOrder(orderRequestObject);
-             return GenericResponse.genericResponse("Success", HttpStatus.CREATED, requestObject);
-         } catch (Exception e) {
-             return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-         }
-     }
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequestObject orderRequestObject) {
+        try {
+            OrderResponseObject requestObject = razorpayService.createOrder(orderRequestObject);
+            return GenericResponse.genericResponse("Success", HttpStatus.CREATED, requestObject);
+        } catch (Exception e) {
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
+    }
 
-     @PostMapping("/capture/payment")
+    @PostMapping("/capture/payment")
     public ResponseEntity<?> capturePayment(@RequestBody OrderRequestObject orderRequestObject) {
         try {
             CapturePaymentResponse requestObject = razorpayService.capturePayment(orderRequestObject);
@@ -55,6 +59,6 @@ public class OrderController {
     }
 
 
-    }
+}
 
 

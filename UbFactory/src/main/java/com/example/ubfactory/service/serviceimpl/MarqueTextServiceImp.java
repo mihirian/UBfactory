@@ -40,8 +40,7 @@ public class MarqueTextServiceImp implements MarqueTextService {
     @Override
     public MarqueTextResponse searchMarqueText(String marqueeName) throws BusinessException {
         Marque marque = marqueRepository.findByMarqueeName(marqueeName);
-        if(marque==null)
-        {
+        if (marque == null) {
             throw new BusinessException(ResponseConstants.MARQUEE_TEXT_NOT_FOUND);
         }
         MarqueTextResponse response = new MarqueTextResponse();
@@ -56,17 +55,16 @@ public class MarqueTextServiceImp implements MarqueTextService {
 
     @Override
     public Response<Marque> updateMarqueeText(MarqueTextRequest marqueTextRequest) throws BusinessException {
-        GenericResponse<Marque> response=new GenericResponse<>();
+        GenericResponse<Marque> response = new GenericResponse<>();
         Marque marque = marqueRepository.findByMarqueeName(marqueTextRequest.getMarqueeName());
-        if(marque==null)
-        {
+        if (marque == null) {
             throw new BusinessException(ResponseConstants.FAILURE);
         }
         marque.setMarqueText(marqueTextRequest.getMarqueText());
         marque.setStartDate(marqueTextRequest.getStartDate());
         marque.setEndDate(marqueTextRequest.getEndDate());
         marqueRepository.save(marque);
-        return response.createSuccessResponse(null,HttpStatus.OK.value(), ResponseConstants.UPDATE_SUCCESSFULLY);
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.UPDATE_SUCCESSFULLY);
 
     }
 

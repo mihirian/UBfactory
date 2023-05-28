@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CustomerCopyRepo extends JpaRepository <CustomerCopy,Integer>{
+public interface CustomerCopyRepo extends JpaRepository<CustomerCopy, Integer> {
     CustomerCopy findByemail(String email);
 }

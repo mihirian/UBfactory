@@ -69,14 +69,14 @@ public class RazorpayServiceImpl implements RazorpayService {
             BigDecimal currentProdcutTotalPrice = price.multiply(new BigDecimal(quantity));
             totalPrice.updateAndGet(v -> v.add(currentProdcutTotalPrice));
         });
-        if(orderRequestObject.getAmount().compareTo(totalPrice.get()) !=0){
-           throw new BusinessException("Requested amount and total amount is not equal.");
+        if (orderRequestObject.getAmount().compareTo(totalPrice.get()) != 0) {
+            throw new BusinessException("Requested amount and total amount is not equal.");
         }
         // address shipping pending
         Shipping shipping = shippingRepository.findById(1).get();
-        OrderSummary orderSummary = orderHelper.createOrderSummary(cart,totalPrice.get(), shipping);
+        OrderSummary orderSummary = orderHelper.createOrderSummary(cart, totalPrice.get(), shipping);
         PaymentSummary paymentSummary = paymentHelper.createPaymentSummary(orderSummary);
-         int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
+        int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
 
         String url = "https://api.razorpay.com/v1/orders";
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -99,7 +99,7 @@ public class RazorpayServiceImpl implements RazorpayService {
         orderSummary.setRazorpayId(responseObject.getId());
         orderHelper.postCreateOrder(orderSummary);
         paymentRepository.save(paymentSummary);
-        OrderResponseObject orderResponseObject = orderHelper.getOrderResponse(responseObject,orderSummary);
+        OrderResponseObject orderResponseObject = orderHelper.getOrderResponse(responseObject, orderSummary);
 
         return orderResponseObject;
     }
@@ -108,16 +108,16 @@ public class RazorpayServiceImpl implements RazorpayService {
     public CapturePaymentResponse capturePayment(OrderRequestObject orderRequestObject) throws BusinessException, RazorpayException {
         paymentHelper.validateCapturePayment(orderRequestObject);
         OrderSummary orderSummary = orderSummaryRepository.findByRazorpayId(orderRequestObject.getRazorpayId());
-        if(orderSummary == null){
+        if (orderSummary == null) {
             throw new BusinessException("Order detail not found");
         }
         PaymentSummary paymentSummary = paymentRepository.findByOrderId(orderSummary.getId());
-        if(paymentSummary == null){
+        if (paymentSummary == null) {
             throw new BusinessException("Payment detail not found");
         }
         paymentSummary.setPaymentId(orderRequestObject.getPaymentId());
 
-        String url = "https://api.razorpay.com/v1/payments/"+orderRequestObject.getPaymentId()+"/capture";
+        String url = "https://api.razorpay.com/v1/payments/" + orderRequestObject.getPaymentId() + "/capture";
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JSONObject json = new JSONObject();
         json.put("amount", orderRequestObject.getAmount());
@@ -133,16 +133,15 @@ public class RazorpayServiceImpl implements RazorpayService {
         paymentSummary.setCaptureRequest(json.toString());
         CapturePaymentResponse capturePaymentResponse = gson.fromJson(response, CapturePaymentResponse.class);
         paymentSummary.setCaptureResponse(capturePaymentResponse.toString());
-        if(capturePaymentResponse.getStatus().equalsIgnoreCase("captured")){
+        if (capturePaymentResponse.getStatus().equalsIgnoreCase("captured")) {
             paymentSummary.setPaymentStatus(Status.SUCCESS.getStatus());
             orderSummary.setOrderStatus(Status.SUCCESS.getStatus());
             orderSummary.setPaymentStatus(Status.SUCCESS.getStatus());
-        }
-        else if(capturePaymentResponse.getError() != null || capturePaymentResponse.getError_code() != null){
+        } else if (capturePaymentResponse.getError() != null || capturePaymentResponse.getError_code() != null) {
             paymentSummary.setPaymentStatus(Status.FAILURE.getStatus());
             orderSummary.setOrderStatus(Status.FAILURE.getStatus());
             orderSummary.setPaymentStatus(Status.FAILURE.getStatus());
-        }else {
+        } else {
             paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
             orderSummary.setOrderStatus(Status.PENDING.getStatus());
             orderSummary.setPaymentStatus(Status.PENDING.getStatus());
@@ -152,12 +151,11 @@ public class RazorpayServiceImpl implements RazorpayService {
     }
 
     @Override
-    public Response billGenrater(int id)
-    {
+    public Response billGenrater(int id) {
         GenericResponse<SheepingResponse> response = new GenericResponse<>();
-        SheepingResponse response1=new SheepingResponse();
-      Cart cart=cartRepository.findByCustomerId(id);
-       List<CartItem> cartList=cartItemRepository.findByCartId(id);
+        SheepingResponse response1 = new SheepingResponse();
+        Cart cart = cartRepository.findByCustomerId(id);
+        List<CartItem> cartList = cartItemRepository.findByCartId(id);
         BigDecimal subprice = BigDecimal.ZERO;
 
         for (CartItem item : cartList) {
@@ -165,10 +163,10 @@ public class RazorpayServiceImpl implements RazorpayService {
             subprice = subprice.add(price);
         }
         System.out.println(subprice);
-        int sheepingId=1;
-        Optional<Shipping> shipping=shippingRepository.findById(sheepingId);
-          BigDecimal sheepingprice= shipping.get().getCharges();
-          BigDecimal totalPrice=subprice.add(sheepingprice);
+        int sheepingId = 1;
+        Optional<Shipping> shipping = shippingRepository.findById(sheepingId);
+        BigDecimal sheepingprice = shipping.get().getCharges();
+        BigDecimal totalPrice = subprice.add(sheepingprice);
         response1.setSubPrice(subprice);
         response1.setTotalPrice(totalPrice);
         response1.setSheepingprice(sheepingprice);

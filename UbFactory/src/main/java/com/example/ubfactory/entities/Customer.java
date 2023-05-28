@@ -1,7 +1,10 @@
 package com.example.ubfactory.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,9 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Customer extends BaseEntity
-{
-
+public class Customer extends BaseEntity {
 
 
     @Column(name = "first_name", nullable = false)
@@ -40,8 +41,6 @@ public class Customer extends BaseEntity
     private String state;
     private String pinCode;
     private Boolean isDeliverable;
-
-
 
 
     @OneToMany(mappedBy = "customer")
