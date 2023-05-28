@@ -24,20 +24,23 @@ public class BannerController {
     @PostMapping()
     public ResponseEntity<Object> createBanner(@RequestBody BannerObject bannerObject) throws BusinessException {
         try {
+            logger.info("Getting request from ui for create banner{}" , bannerObject);
             BannerObject saveBanner = bannerService.saveBanner(bannerObject);
             return GenericResponse.genericResponse("Success", HttpStatus.CREATED, saveBanner);
-//    } catch (BusinessException b) {
-//        return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+    } catch (BusinessException b) {
+        return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
             return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
     @GetMapping()
-    public ResponseEntity<Object> GetBanner() {
+    public ResponseEntity<Object> GetBannerList() {
         try {
-            List<BannerObject> saveBanner = bannerService.getBanner();
+            List<BannerObject> saveBanner = bannerService.getBannerList();
             return new ResponseEntity<>(saveBanner, HttpStatus.OK);
+        } catch (BusinessException b) {
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
             return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }

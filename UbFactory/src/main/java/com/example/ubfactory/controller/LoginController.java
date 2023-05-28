@@ -1,10 +1,12 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.helper.JwtTokenHelper;
-import com.example.ubfactory.objects.LoginRequest;
-import com.example.ubfactory.objects.LoginResponse;
+import com.example.ubfactory.exception.BusinessException;
+import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.service.serviceimpl.LoginServiceImp;
+import com.example.ubfactory.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,19 +28,29 @@ public class LoginController
     @Autowired
     private AuthenticationManager authenticationManager;
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<LoginResponse> generateToken(@RequestBody LoginRequest request) throws Exception {
+    public ResponseEntity<Object> generateToken(@RequestBody LoginRequest request) throws Exception {
         try {
             this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),(request.getPassword())));
         } catch (UsernameNotFoundException e) {
             e.printStackTrace();
-            throw new Exception("BadCrdentials");
+            throw new Exception("Badcredential");
         } catch (BadCredentialsException b) {
-            b.printStackTrace();
-            throw new Exception("BadCrdentials");
+            return GenericResponse.genericResponse("Incorrect email or password", HttpStatus.BAD_REQUEST, null);
         }
         LoginResponse loginResponse = this.userDetailsSer.getUserByName(request.getEmail());
-        return new ResponseEntity<LoginResponse>(loginResponse,HttpStatus.OK);
+        return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, loginResponse);
+    }
 
 
+    @GetMapping("logout/{ownerId}")
+    public ResponseEntity<Object> logout(@PathVariable Integer ownerId) throws BusinessException {
+        try {
+            Response response= customerService.logout(ownerId);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+        } catch (BusinessException b) {
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+        } catch (Exception e) {
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        }
     }
 }

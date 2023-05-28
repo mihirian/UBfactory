@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 @Data
 public class RazorpayResponseObject {
     public static final Logger logger = LoggerFactory.getLogger(RazorpayResponseObject.class);
+
     private Integer amount;
     private String currency;
     private String id;

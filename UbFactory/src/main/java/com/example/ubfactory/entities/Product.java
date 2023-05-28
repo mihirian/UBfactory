@@ -10,7 +10,6 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "product")
 public class Product extends BaseEntity {

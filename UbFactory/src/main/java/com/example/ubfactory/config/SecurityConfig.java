@@ -41,18 +41,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationFilterEntrypoint jwtAuthenticationFilterEntryPoint;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf()
+                .disable()
                 .authorizeRequests()
                 .antMatchers("/login", "/customer/registration").permitAll()
                 .antMatchers(HttpMethod.GET).permitAll()
+                .antMatchers(HttpMethod.POST).permitAll()
                 .antMatchers(PUBLIC_URLS).permitAll()
-                .anyRequest().authenticated()
+                .antMatchers(HttpMethod.PUT).permitAll()
+                .antMatchers("/api/secure/**").authenticated()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().permitAll() // Allow all other requests without authentication
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationFilterEntryPoint)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+
         http.addFilterBefore(jwtautheticatorfilter, UsernamePasswordAuthenticationFilter.class);
+
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
