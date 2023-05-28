@@ -4,7 +4,7 @@ import com.example.ubfactory.entities.Marque;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.MarqueTextHelper;
-import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.objects.MarqueTextRequest;
 import com.example.ubfactory.objects.MarqueTextResponse;
 import com.example.ubfactory.repository.MarqueRepository;
@@ -56,7 +56,7 @@ public class MarqueTextServiceImp implements MarqueTextService {
 
     @Override
     public Response<Marque> updateMarqueeText(MarqueTextRequest marqueTextRequest) throws BusinessException {
-        GenricResponse<Marque> response=new GenricResponse<>();
+        GenericResponse<Marque> response=new GenericResponse<>();
         Marque marque = marqueRepository.findByMarqueeName(marqueTextRequest.getMarqueeName());
         if(marque==null)
         {

@@ -13,8 +13,6 @@ import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.OrderVaildator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.razorpay.Payment;
-import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -156,7 +154,7 @@ public class RazorpayServiceImpl implements RazorpayService {
     @Override
     public Response billGenrater(int id)
     {
-        GenricResponse<SheepingResponse> response = new GenricResponse<>();
+        GenericResponse<SheepingResponse> response = new GenericResponse<>();
         SheepingResponse response1=new SheepingResponse();
       Cart cart=cartRepository.findByCustomerId(id);
        List<CartItem> cartList=cartItemRepository.findByCartId(id);

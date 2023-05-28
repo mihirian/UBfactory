@@ -2,7 +2,7 @@ package com.example.ubfactory.controller;
 
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
-import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.objects.MarqueTextRequest;
 import com.example.ubfactory.objects.MarqueTextResponse;
 import com.example.ubfactory.service.MarqueTextService;
@@ -21,11 +21,11 @@ public class MarqueTextController {
     public ResponseEntity<Object> addMarqueText(@RequestBody MarqueTextRequest marqueTextRequest) throws BusinessException {
         try {
             MarqueTextResponse marqueTextResponse = marqueTextService.addMarqueText(marqueTextRequest);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
         } catch (BusinessException b) {
-            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -33,11 +33,11 @@ public class MarqueTextController {
     public ResponseEntity<Object> serchMarqueText(@PathVariable String marqueeName) throws BusinessException {
         try {
             MarqueTextResponse marqueTextResponse = marqueTextService.searchMarqueText(marqueeName);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, marqueTextResponse);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, marqueTextResponse);
         } catch (BusinessException b) {
-            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -45,11 +45,11 @@ public class MarqueTextController {
     public ResponseEntity<Object> updateMarqueeText(@RequestBody MarqueTextRequest marqueTextRequest) throws BusinessException {
         try {
             Response response = marqueTextService.updateMarqueeText(marqueTextRequest);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
         } catch (BusinessException b) {
-            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

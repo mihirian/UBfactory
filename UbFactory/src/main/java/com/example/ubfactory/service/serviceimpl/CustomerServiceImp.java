@@ -4,7 +4,6 @@ import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.entities.CustomerCopy;
 import com.example.ubfactory.entities.ForgotPassword;
 import com.example.ubfactory.entities.Token;
-import com.example.ubfactory.enums.RedisKey;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
 import com.example.ubfactory.objects.*;
@@ -20,8 +19,6 @@ import com.example.ubfactory.utils.ResponseConstants;
 import com.example.ubfactory.validator.CustomerRequestVailidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -30,7 +27,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,7 +73,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response updateCustomerDetailById(CustomerObject customerObject, int id) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
+        GenericResponse<Customer> response = new GenericResponse<>();
         Customer customer = customerRepository.findById(id).get();
         if (ObjectUtils.isEmpty(customer)) {
             throw new BusinessException(112, ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
@@ -96,7 +92,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response changePassword(ChangePasswordRequest changePasswordRequest) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
+        GenericResponse<Customer> response = new GenericResponse<>();
         Optional<Customer> optionalCustomer = customerRepository.findById(changePasswordRequest.getId());
 
         if (!optionalCustomer.isPresent()) {
@@ -126,7 +122,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     @Transactional
     public Response logout(Integer ownerId) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
+        GenericResponse<Customer> response = new GenericResponse<>();
         Token token = tokenDao.findByownerId(ownerId);
         if (token == null) {
             throw new BusinessException(ResponseConstants.FAILURE);
@@ -139,7 +135,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response addAddress(AddressRequest request) throws Exception {
-        GenricResponse<Customer> response = new GenricResponse<>();
+        GenericResponse<Customer> response = new GenericResponse<>();
         AddressRequest request1=cutomerRequestVailidator.validateAddressRequest(request);
 
         Customer customer1 = customerRepository.findByemail(request.getEmail());
@@ -163,7 +159,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response getCustomerDetailById(int id) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
+        GenericResponse<Customer> response = new GenericResponse<>();
         Customer customer = customerRepository.findById(id).get();
         if (customer == null) {
             throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
@@ -174,7 +170,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response customerRegistrations(CustomerObject customerObject) {
-        GenricResponse<CustomerCopy> response = new GenricResponse<>();
+        GenericResponse<CustomerCopy> response = new GenericResponse<>();
 
         String email = customerObject.getEmail();
         String otp = customerHelper.generateOTP();
@@ -212,7 +208,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response verifyOtp(VerificationRequest request) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
+        GenericResponse<Customer> response = new GenericResponse<>();
         CustomerObject customerObject = null;
 
         CustomerCopy customerCopy = customerCopyRepo.findByemail(request.getEmail());
@@ -249,7 +245,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response forgatePassword(String email) throws BusinessException {
-        GenricResponse<ForgotPassword> response = new GenricResponse<>();
+        GenericResponse<ForgotPassword> response = new GenericResponse<>();
         Customer customer = customerRepository.findByemail(email);
         if (customer == null) {
             throw new BusinessException(ResponseConstants.CUSTOMER_NOT_FOUND);
@@ -274,7 +270,7 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public Response forgetPasswordVerifyOtp(ResetPassword request) throws BusinessException {
-        GenricResponse<Customer> response = new GenricResponse<>();
+        GenericResponse<Customer> response = new GenericResponse<>();
         ForgotPassword forgotPassword = forgotPasswordRepo.findByemail(request.getEmail());
         String givenTime = String.valueOf(forgotPassword.getUpdatedAt()) + 0 + 0 + 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");

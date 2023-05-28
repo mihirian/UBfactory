@@ -1,6 +1,5 @@
 package com.example.ubfactory.objects;
 
-import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.utils.Response;
 import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.http.HttpStatus;
@@ -10,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GenricResponse<T> {
-    public static ResponseEntity<Object> genricResponse(String message, HttpStatus status, Object responseObj) {
+public class GenericResponse<T> {
+    public static ResponseEntity<Object> genericResponse(String message, HttpStatus status, Object responseObj) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("message", message);
         map.put("status", status.value());
