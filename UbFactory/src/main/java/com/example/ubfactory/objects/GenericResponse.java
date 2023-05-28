@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GenericResponse<T> {
-    public static ResponseEntity<Object> genricResponse(String message, HttpStatus status, Object responseObj) {
+    public static ResponseEntity<Object> genericResponse(String message, HttpStatus status, Object responseObj) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("message", message);
         map.put("status", status.value());

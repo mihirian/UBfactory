@@ -22,11 +22,11 @@ public class MarqueTextController {
     public ResponseEntity<Object> addMarqueText(@RequestBody MarqueTextRequest marqueTextRequest) throws BusinessException {
         try {
             MarqueTextResponse marqueTextResponse = marqueTextService.addMarqueText(marqueTextRequest);
-            return GenericResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
         } catch (BusinessException b) {
-            return GenericResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -34,11 +34,11 @@ public class MarqueTextController {
     public ResponseEntity<Object> serchMarqueText(@RequestBody MarqueTextRequest marqueTextRequest) throws BusinessException {
         try {
             MarqueTextResponse marqueTextResponse = marqueTextService.searchMarqueText(marqueTextRequest);
-            return GenericResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, marqueTextResponse);
         } catch (BusinessException b) {
-            return GenericResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

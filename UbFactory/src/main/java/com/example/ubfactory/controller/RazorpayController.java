@@ -37,9 +37,9 @@ public class RazorpayController {
     public ResponseEntity<?> createOrder(@RequestBody RazorpayRequestObject razorpayRequestObject) {
         try {
             RazorpayRequestObject requestObject = razorpayService.createOrder(razorpayRequestObject);
-            return GenericResponse.genricResponse("Success", HttpStatus.CREATED, requestObject);
+            return GenericResponse.genericResponse("Success", HttpStatus.CREATED, requestObject);
         } catch (Exception e) {
-            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

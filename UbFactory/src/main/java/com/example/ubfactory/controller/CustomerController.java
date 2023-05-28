@@ -22,11 +22,11 @@ public class CustomerController {
     public ResponseEntity<Object> customerRegistration(@RequestBody CustomerRequest request) throws BusinessException {
         try {
             Response response = customerService.customerRegistration(request);
-            return GenericResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
         } catch (BusinessException b) {
-            return GenericResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 }

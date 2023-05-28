@@ -25,11 +25,11 @@ public class BannerController {
     public ResponseEntity<Object> createBanner(@RequestBody BannerObject bannerObject) throws BusinessException {
         try {
             BannerObject saveBanner = bannerService.saveBanner(bannerObject);
-            return GenericResponse.genricResponse("Success", HttpStatus.CREATED, saveBanner);
+            return GenericResponse.genericResponse("Success", HttpStatus.CREATED, saveBanner);
 //    } catch (BusinessException b) {
 //        return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -39,7 +39,7 @@ public class BannerController {
             List<BannerObject> saveBanner = bannerService.getBanner();
             return new ResponseEntity<>(saveBanner, HttpStatus.OK);
         } catch (Exception e) {
-            return GenericResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 }
