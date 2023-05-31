@@ -1,7 +1,7 @@
 package com.example.ubfactory.validator;
 
 import com.example.ubfactory.exception.BusinessException;
-import com.example.ubfactory.objects.AddressRequest;
+import com.example.ubfactory.objects.AddressObject;
 import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class CustomerRequestVailidator {
         return request;
     }
 
-    public AddressRequest validateAddressRequest(AddressRequest request) throws BusinessException {
+    public AddressObject validateAddressRequest(AddressObject request) throws BusinessException {
         if (request == null) {
             throw new BusinessException(ResponseConstants.INVAILID_REQUEST);
         }
@@ -37,6 +37,18 @@ public class CustomerRequestVailidator {
         }
         if (request.getLat().isBlank() & request.getLon().isBlank()) {
             throw new BusinessException("lat long not found");
+        }
+        if(request.getStreetAddress().isBlank())
+        {
+            throw new BusinessException("Street address not found");
+        }
+        if(request.getState().isBlank())
+        {
+            throw new BusinessException("state not found");
+        }
+        if(request.getPinCode().isBlank())
+        {
+            throw new BusinessException("Pin code not found");
         }
 
 

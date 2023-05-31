@@ -1,5 +1,7 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.entities.Customer;
+import com.example.ubfactory.entities.ForgotPassword;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CustomerHelper;
@@ -38,103 +40,120 @@ public class CustomerController {
     }
 
     @GetMapping("get/customer_byid/{id}")
-    public ResponseEntity<Object> getCustomerDetailById(@PathVariable int id) throws BusinessException {
-        try {
-            Response response = customerService.getCustomerDetailById(id);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
-        } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-        }
-    }
-
-    @PutMapping("/update/customer_byid/{id}")
-    public ResponseEntity<Object> updateCustomerDetailById(@RequestBody CustomerObject customerObject, @PathVariable int id) throws BusinessException {
-        try {
-            Response response = customerService.updateCustomerDetailById(customerObject, id);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
-        } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-        }
-    }
-
-
-    @PutMapping("/change/password")
-    public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) throws BusinessException {
-        try {
-            Response response = customerService.changePassword(changePasswordRequest);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
-        } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-        }
-    }
-
-
-    @PostMapping("forgot-password/{email}")
-    public ResponseEntity<Object> forgotPassword(@PathVariable String email) {
-        try {
-            Response response = customerService.forgatePassword(email);
-            return GenericResponse.genericResponse(ResponseConstants.MAIL_SEND_SUCCESSFULLY, HttpStatus.OK, null);
-        } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+    public Response<Customer> getCustomerDetailById(@PathVariable int id) throws BusinessException
+        {
+            GenericResponse<Customer> response = new GenericResponse<>();
+            try {
+                Customer customer = customerService.getCustomerDetailById(id);
+                return response.createSuccessResponse(customer, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+            } catch (BusinessException b) {
+                return response.createErrorResponse(b.getErrorCode(), b.getLocalizedMessage());
+            } catch (Exception e) {
+                return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+            }
         }
 
-    }
-
-    @PostMapping("forgot/password/verify-otp")
-    public ResponseEntity<Object> forgetPasswordVerifyOtp(@RequestBody ResetPassword request) {
-        try {
-            Response response = customerService.forgetPasswordVerifyOtp(request);
-            return GenericResponse.genericResponse(ResponseConstants.PASSWORD_RESET, HttpStatus.OK, null);
-        } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        @PutMapping("/update/customer_byid/{id}")
+        public ResponseEntity<Object> updateCustomerDetailById (@RequestBody CustomerObject customerObject,
+        @PathVariable int id) throws BusinessException {
+            try {
+                Response response = customerService.updateCustomerDetailById(customerObject, id);
+                return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+            } catch (BusinessException b) {
+                return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            } catch (Exception e) {
+                return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            }
         }
-    }
 
-    @PostMapping("/registration")
-    public ResponseEntity<Object> registrationVerification(@RequestBody CustomerObject customerObject) {
-        try {
-            Response response = customerService.customerRegistrations(customerObject);
-            return GenericResponse.genericResponse(ResponseConstants.SUCCESS, HttpStatus.OK, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+
+        @PutMapping("/change/password")
+        public Response<ChangePasswordObject> changePassword (@RequestBody ChangePasswordObject changePasswordRequest) throws BusinessException
+        {
+            GenericResponse<ChangePasswordObject> response = new GenericResponse<>();
+            try {
+                ChangePasswordObject changePasswordObject = customerService.changePassword(changePasswordRequest);
+                return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
+
+            } catch (BusinessException b) {
+                return response.createErrorResponse(b.getErrorCode(), b.getLocalizedMessage());
+            } catch (Exception e) {
+                return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+            }
         }
-    }
 
 
-    @PostMapping("add/address")
-    public ResponseEntity<Object> addAddress(@RequestBody AddressRequest request) throws BusinessException {
-        try {
-            Response response = customerService.addAddress(request);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
-        } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+        @PostMapping("forgot-password/{email}")
+        public Response<ForgotPassword> forgotPassword (@PathVariable String email)
+        {
+            GenericResponse<ForgotPassword> response = new GenericResponse<>();
+            try {
+                ForgotPassword forgotPassword = customerService.forgatePassword(email);
+                return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
+            } catch (BusinessException b) {
+                return response.createErrorResponse(b.getErrorCode(), b.getLocalizedMessage());
+            } catch (Exception e) {
+                return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
+            }
+
         }
-    }
 
+        @PostMapping("forgot/password/verify-otp")
+        public Response<ResetPassword> forgetPasswordVerifyOtp (@RequestBody ResetPassword request)
+        {
+            GenericResponse<ResetPassword> response = new GenericResponse<>();
+            try {
+                ResetPassword resetPassword = customerService.forgetPasswordVerifyOtp(request);
+                return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
+            } catch (BusinessException b) {
+                return response.createErrorResponse(b.getErrorCode(), b.getLocalizedMessage());
+            } catch (Exception e) {
+                return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
 
-    @PostMapping("registration/verify-otp")
-    public ResponseEntity<Object> verifyOTP(@RequestBody VerificationRequest request) {
-        try {
-            Response response = customerService.verifyOtp(request);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, null);
-        } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            }
         }
+
+        @PostMapping("/registration")
+        public Response<CustomerObject> registrationVerification (@RequestBody CustomerObject customerObject)
+        {
+            GenericResponse<CustomerObject> response = new GenericResponse<>();
+            try {
+                CustomerObject customerRegistrations = customerService.customerRegistrations(customerObject);
+                return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.REGISTRATION_VERIFICATION_MAIL);
+            } catch (Exception e) {
+                return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+            }
+        }
+
+
+        @PostMapping("add/address")
+        public Response<AddressObject> addAddress (@RequestBody AddressObject request) throws BusinessException
+        {
+            GenericResponse<AddressObject> response = new GenericResponse<>();
+            try {
+                AddressObject addressObject = customerService.addAddress(request);
+                return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.SHEEPING_ADDRESS_UPDATE);
+            } catch (BusinessException b) {
+                return response.createErrorResponse(b.getErrorCode(), b.getLocalizedMessage());
+            } catch (Exception e) {
+                return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+            }
+        }
+
+        @PostMapping("registration/verify-otp")
+        public Response<CustomerObject> verifyOTP (@RequestBody VerificationRequest request)
+        {
+            GenericResponse<CustomerObject> response = new GenericResponse<>();
+            try {
+                CustomerObject customerObject = customerService.verifyOtp(request);
+                return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_REGISTERED);
+
+            } catch (BusinessException b) {
+                return response.createErrorResponse(b.getErrorCode(), b.getLocalizedMessage());
+            } catch (Exception e) {
+                return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+            }
+        }
+
     }
 
-
-}

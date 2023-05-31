@@ -3,7 +3,7 @@ package com.example.ubfactory.objects;
 import lombok.Data;
 
 @Data
-public class AddressRequest {
+public class AddressObject {
     private String email;
     private String streetAddress;
     private String town;

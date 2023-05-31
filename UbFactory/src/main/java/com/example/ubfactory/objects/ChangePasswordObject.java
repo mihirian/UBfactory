@@ -3,7 +3,7 @@ package com.example.ubfactory.objects;
 import lombok.Data;
 
 @Data
-public class ChangePasswordRequest {
+public class ChangePasswordObject {
     int id;
     private String currentPassword;
     private String newPassword;

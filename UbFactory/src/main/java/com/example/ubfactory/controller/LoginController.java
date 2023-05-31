@@ -1,14 +1,17 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.entities.Customer;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.JwtTokenHelper;
+import com.example.ubfactory.objects.CustomerObject;
 import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.objects.LoginRequest;
 import com.example.ubfactory.objects.LoginResponse;
 import com.example.ubfactory.service.CustomerService;
 import com.example.ubfactory.service.serviceimpl.LoginServiceImp;
 import com.example.ubfactory.utils.Response;
+import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,14 +48,16 @@ public class LoginController {
 
 
     @GetMapping("logout/{ownerId}")
-    public ResponseEntity<Object> logout(@PathVariable Integer ownerId) throws BusinessException {
+    public Response<Customer> logout(@PathVariable Integer ownerId) throws BusinessException
+    {      GenericResponse<Customer> response = new GenericResponse<>();
         try {
-            Response response = customerService.logout(ownerId);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+            CustomerObject  customerObject = customerService.logout(ownerId);
+            return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.LOGOUT_SUCCESSFULLY);
+
         } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(b.getErrorCode(), b.getLocalizedMessage());
         } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
         }
     }
 }

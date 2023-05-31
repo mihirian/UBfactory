@@ -62,7 +62,7 @@ public class CustomerHelper {
         javaMailSender.send(message);
     }
 
-    public Double getLatLngFromZipCode(double lat1, double lon1) throws Exception {
+    public Double getLatLngFromZipCode(double lat1, double lon1)  {
         double lat2 = 12.9389019;
         double lon2 = 77.7292245;
         double dLat = Math.toRadians(lat2 - lat1);
