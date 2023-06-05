@@ -20,8 +20,9 @@ public class PaymentHelper {
 
     @Autowired
     private PaymentRepository paymentRepository;
+
     public PaymentSummary createPaymentSummary(OrderSummary orderSummary) {
-        PaymentSummary paymentSummary =new PaymentSummary();
+        PaymentSummary paymentSummary = new PaymentSummary();
         paymentSummary.setOrderId(orderSummary.getId());
         paymentSummary.setAmount(orderSummary.getTotalPrice());
         paymentSummary.setCustomerId(orderSummary.getCustomer().getId());
@@ -30,17 +31,17 @@ public class PaymentHelper {
         paymentSummary.setPaymentStatus(Status.INITIATED.getStatus());
         paymentSummary.setCurrency("INR");
         paymentRepository.save(paymentSummary);
-       return paymentSummary;
+        return paymentSummary;
     }
 
     public void validateCapturePayment(OrderRequestObject orderRequestObject) throws BusinessException {
-        if(ObjectUtils.isEmpty(orderRequestObject.getPaymentId())){
-          throw new BusinessException("Payment id not found.");
+        if (ObjectUtils.isEmpty(orderRequestObject.getPaymentId())) {
+            throw new BusinessException("Payment id not found.");
         }
-        if(ObjectUtils.isEmpty(orderRequestObject.getSignature())){
+        if (ObjectUtils.isEmpty(orderRequestObject.getSignature())) {
             throw new BusinessException("Signature not found");
         }
-        if(ObjectUtils.isEmpty(orderRequestObject.getRazorpayId())){
+        if (ObjectUtils.isEmpty(orderRequestObject.getRazorpayId())) {
             throw new BusinessException("razorpay order id not found.");
         }
 

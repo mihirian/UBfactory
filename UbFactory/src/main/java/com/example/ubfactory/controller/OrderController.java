@@ -31,9 +31,9 @@ public class OrderController {
      public ResponseEntity<?> createOrder(@RequestBody OrderRequestObject orderRequestObject) {
          try {
              OrderResponseObject requestObject = razorpayService.createOrder(orderRequestObject);
-             return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
+             return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
          } catch (Exception e) {
-             return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+             return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
          }
      }
 
@@ -41,9 +41,9 @@ public class OrderController {
     public ResponseEntity<?> capturePayment(@RequestBody OrderRequestObject orderRequestObject) {
         try {
             CapturePaymentResponse requestObject = razorpayService.capturePayment(orderRequestObject);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -51,9 +51,9 @@ public class OrderController {
     public ResponseEntity<Object> billGenrater(@PathVariable int id) throws BusinessException {
         try {
             Response response = razorpayService.billGenrater(id);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -61,9 +61,9 @@ public class OrderController {
     public ResponseEntity<?> orderHistory(@RequestBody OrderRequestObject orderRequestObject) {
         try {
             OrderHistoryResponse requestObject = razorpayService.orderhistory(orderRequestObject);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

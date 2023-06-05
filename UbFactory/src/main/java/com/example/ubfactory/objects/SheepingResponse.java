@@ -5,9 +5,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class SheepingResponse
-{
+public class SheepingResponse {
     private BigDecimal subPrice;
     private BigDecimal totalPrice;
-    private  BigDecimal sheepingprice;
+    private BigDecimal sheepingprice;
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
 
 @Component
 public class OrderVaildator {
@@ -24,8 +23,8 @@ public class OrderVaildator {
     CartRepository cartRepository;
 
     public Cart validateOrderRequest(OrderRequestObject orderRequestObject) throws BusinessException {
-         Customer customer = customerRepository.findById(orderRequestObject.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
-            Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("cart not found"));
+        Customer customer = customerRepository.findById(orderRequestObject.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("cart not found"));
 //        if(ObjectUtils.isEmpty(orderRequestObject.getProductId())){
 //           throw new BusinessException("Product id cannot be null");
 //        }
@@ -33,13 +32,13 @@ public class OrderVaildator {
     }
 
     public void validateCapturePayment(OrderRequestObject orderRequestObject) throws BusinessException {
-        if(ObjectUtils.isEmpty(orderRequestObject.getPaymentId())){
+        if (ObjectUtils.isEmpty(orderRequestObject.getPaymentId())) {
             throw new BusinessException("Payment id not found.");
         }
-        if(ObjectUtils.isEmpty(orderRequestObject.getSignature())){
+        if (ObjectUtils.isEmpty(orderRequestObject.getSignature())) {
             throw new BusinessException("Signature not found");
         }
-        if(ObjectUtils.isEmpty(orderRequestObject.getRazorpayId())){
+        if (ObjectUtils.isEmpty(orderRequestObject.getRazorpayId())) {
             throw new BusinessException("razorpay order id not found.");
         }
 

@@ -19,13 +19,16 @@ public interface CustomerService {
 
     Response logout(Integer ownerId) throws BusinessException;
 
-    Response resetPassword(ResetPassword request) throws BusinessException;
 
-    Response addAddress(AddressRequest request) throws BusinessException;
+    Response addAddress(AddressRequest request) throws Exception;
 
     Response getCustomerDetailById(int id) throws BusinessException;
 
     Response customerRegistrations(CustomerObject customerObject);
 
     Response verifyOtp(VerificationRequest request) throws BusinessException;
+
+    Response forgatePassword(String email) throws BusinessException;
+
+    Response forgetPasswordVerifyOtp(ResetPassword request) throws BusinessException;
 }

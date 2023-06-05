@@ -59,11 +59,4 @@ public class OrderHelper {
         orderSummary.setPaymentStatus(Status.PENDING.getStatus());
         orderSummaryRepository.save(orderSummary);
     }
-
-//    public OrderItem createOrderItem(CartItem cartItem) {
-//        OrderItem orderItem =new OrderItem();
-//        orderItem.setCreatedAt(new Date());
-//        orderItem.setUpdatedAt(new Date());
-//
-//    }
 }

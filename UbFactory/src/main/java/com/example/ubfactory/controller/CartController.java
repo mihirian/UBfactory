@@ -51,10 +51,10 @@ public class CartController {
     public ResponseEntity<Object> getCartItemsWithShipping(@PathVariable Integer customerId) {
         try {
             CartItemPriceResponse response = cartService.getCartItemsWithShipping(customerId);
-             return GenricResponse.genricResponse("Success", HttpStatus.CREATED, response);
+             return GenericResponse.genericResponse("Success", HttpStatus.CREATED, response);
         }
         catch (Exception e){
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.ubfactory.enums;
 
-public enum RedisKey
-{
+public enum RedisKey {
     REGISTRATIONKEY
 }

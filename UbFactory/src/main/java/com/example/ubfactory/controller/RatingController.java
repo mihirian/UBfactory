@@ -24,9 +24,9 @@ public class RatingController {
     public ResponseEntity<?> createRating(@RequestBody RatingRequestObject ratingRequestObject) {
         try {
             String response = ratingService.createRating(ratingRequestObject);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
@@ -34,9 +34,9 @@ public class RatingController {
     public ResponseEntity<?> getByProductId(@PathVariable Integer productId) {
         try {
             RatingRequestObject response = ratingService.getByProductId(productId);
-            return GenricResponse.genricResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
+            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 

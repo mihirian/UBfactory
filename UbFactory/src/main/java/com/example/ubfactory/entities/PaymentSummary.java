@@ -2,16 +2,13 @@ package com.example.ubfactory.entities;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Getter
 @Setter

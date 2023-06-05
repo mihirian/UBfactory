@@ -1,10 +1,13 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.objects.ProductObject;
 import com.example.ubfactory.service.ProductService;
+import com.example.ubfactory.utils.Request;
+import com.example.ubfactory.utils.Response;
+import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,32 +25,37 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductObject> createProduct(@Valid @RequestBody ProductObject product) {
-        ProductObject createdProduct = productService.createProduct(product);
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+    public Response<ProductObject> createProduct(@Valid @RequestBody Request<ProductObject> product) {
+        GenericResponse<ProductObject> response = new GenericResponse<>();
+        ProductObject createdProduct = productService.createProduct(product.getData());
+        return response.createSuccessResponse(createdProduct, HttpStatus.CREATED.value(), ResponseConstants.PRODUCT_REGISTERED);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<ProductObject> updateProduct(@Valid @RequestBody ProductObject product) {
+    public Response<ProductObject> updateProduct(@Valid @RequestBody ProductObject product) {
+        GenericResponse<ProductObject> response = new GenericResponse<>();
         ProductObject createdProduct = productService.updateProduct(product);
-        return new ResponseEntity<>(createdProduct, HttpStatus.OK);
+        return response.createSuccessResponse(createdProduct, HttpStatus.MULTI_STATUS.value(), ResponseConstants.PRODUCT_UPDATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductObject>> getAllProducts() {
+    public Response<ProductObject> getAllProducts() {
+        GenericResponse<ProductObject> response = new GenericResponse<>();
         List<ProductObject> productObjectList = productService.getAllProducts();
-        return new ResponseEntity<>(productObjectList, HttpStatus.OK);
+        return response.createSuccessListResponse(productObjectList);
     }
 
     @GetMapping(path = "/get/all/{category}")
-    public ResponseEntity<List<ProductObject>> getAllProductsByCategory(@PathVariable String category) {
+    public Response<ProductObject> getAllProductsByCategory(@PathVariable String category) {
+        GenericResponse<ProductObject> response = new GenericResponse<>();
         List<ProductObject> productObjectList = productService.getAllProductsByCategoryName(category);
-        return new ResponseEntity<>(productObjectList, HttpStatus.OK);
+        return response.createSuccessListResponse(productObjectList);
     }
 
     @DeleteMapping(path = "delete/{productId}")
-    public ResponseEntity<ProductObject> deleteProductById(@PathVariable Integer productId) {
+    public Response<ProductObject> deleteProductById(@PathVariable Integer productId) {
+        GenericResponse<ProductObject> response = new GenericResponse<>();
         productService.deleteProductById(productId);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PRODUCT_DELETED);
     }
 }

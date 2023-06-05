@@ -2,7 +2,7 @@ package com.example.ubfactory.controller;
 
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.BannerObject;
-import com.example.ubfactory.objects.GenricResponse;
+import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.objects.ShippingObject;
 import com.example.ubfactory.service.ShippingService;
 import com.example.ubfactory.service.serviceimpl.ShippingServiceImpl;
@@ -27,11 +27,11 @@ public class ShippingController {
         try {
             logger.info("Getting request from ui for create banner{}" , bannerObject);
             ShippingObject saveBanner = shippingService.shippingService(bannerObject);
-            return GenricResponse.genricResponse("Success", HttpStatus.CREATED, saveBanner);
+            return GenericResponse.genericResponse("Success", HttpStatus.CREATED, saveBanner);
 //        } catch (BusinessException b) {
 //            return GenricResponse.genricResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
         } catch (Exception e) {
-            return GenricResponse.genricResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 }
