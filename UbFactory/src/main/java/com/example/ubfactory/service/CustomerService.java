@@ -1,5 +1,7 @@
 package com.example.ubfactory.service;
 
+import com.example.ubfactory.entities.Customer;
+import com.example.ubfactory.entities.ForgotPassword;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.utils.Response;
@@ -14,21 +16,21 @@ public interface CustomerService {
 
     Response updateCustomerDetailById(CustomerObject customerObject, int id) throws BusinessException;
 
-    Response changePassword(ChangePasswordRequest changePasswordRequest) throws BusinessException;
+    ChangePasswordObject changePassword(ChangePasswordObject changePasswordRequest) throws BusinessException;
 
 
-    Response logout(Integer ownerId) throws BusinessException;
+    CustomerObject logout(Integer ownerId) throws BusinessException;
 
 
-    Response addAddress(AddressRequest request) throws Exception;
+    AddressObject addAddress(AddressObject request) throws BusinessException;
 
-    Response getCustomerDetailById(int id) throws BusinessException;
+    Customer getCustomerDetailById(int id) throws BusinessException;
 
-    Response customerRegistrations(CustomerObject customerObject);
+    CustomerObject customerRegistrations(CustomerObject customerObject);
 
-    Response verifyOtp(VerificationRequest request) throws BusinessException;
+    CustomerObject verifyOtp(VerificationRequest request) throws BusinessException;
 
-    Response forgatePassword(String email) throws BusinessException;
+    ForgotPassword forgatePassword(String email) throws BusinessException;
 
-    Response forgetPasswordVerifyOtp(ResetPassword request) throws BusinessException;
+    ResetPassword forgetPasswordVerifyOtp(ResetPassword request) throws BusinessException;
 }

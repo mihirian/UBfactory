@@ -90,7 +90,7 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public Response changePassword(ChangePasswordRequest changePasswordRequest) throws BusinessException {
+    public ChangePasswordObject changePassword(ChangePasswordObject changePasswordRequest) throws BusinessException {
         GenericResponse<Customer> response = new GenericResponse<>();
         Optional<Customer> optionalCustomer = customerRepository.findById(changePasswordRequest.getId());
 
@@ -115,12 +115,12 @@ public class CustomerServiceImp implements CustomerService {
         customer.setPassword(encodedNewPassword);
         customerRepository.save(customer);
 
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_UPDATED);
+        return null;
     }
 
     @Override
     @Transactional
-    public Response logout(Integer ownerId) throws BusinessException {
+    public CustomerObject logout(Integer ownerId) throws BusinessException {
         GenericResponse<Customer> response = new GenericResponse<>();
         Token token = tokenDao.findByownerId(ownerId);
         if (token == null) {
@@ -128,14 +128,13 @@ public class CustomerServiceImp implements CustomerService {
         }
         tokenDao.deleteByownerId(ownerId);
 
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.LOGOUT_SUCCESSFULLY);
+        return null;
     }
 
 
     @Override
-    public Response addAddress(AddressRequest request) throws Exception {
-        GenericResponse<Customer> response = new GenericResponse<>();
-        AddressRequest request1 = cutomerRequestVailidator.validateAddressRequest(request);
+    public AddressObject addAddress(AddressObject request) throws BusinessException {
+        AddressObject request1 = cutomerRequestVailidator.validateAddressRequest(request);
 
         Customer customer1 = customerRepository.findByemail(request.getEmail());
         if (customer1 == null) {
@@ -153,23 +152,23 @@ public class CustomerServiceImp implements CustomerService {
             customer1.setIsDeliverable(false);
             customerRepository.save(customer1);
         }
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.SHEEPING_ADDRESS_UPDATE);
+        return null;
     }
 
     @Override
-    public Response getCustomerDetailById(int id) throws BusinessException {
-        GenericResponse<Customer> response = new GenericResponse<>();
+    public Customer getCustomerDetailById(int id) throws BusinessException {
+
         Customer customer = customerRepository.findById(id).get();
         if (customer == null) {
             throw new BusinessException(ResponseConstants.CUSTOMER_DETAIL_NOT_FOUND);
         }
-        return response.createSuccessResponse(customer, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
 
+        return customer;
     }
 
     @Override
-    public Response customerRegistrations(CustomerObject customerObject) {
-        GenericResponse<CustomerCopy> response = new GenericResponse<>();
+    public CustomerObject customerRegistrations(CustomerObject customerObject) {
+
 
         String email = customerObject.getEmail();
         String otp = customerHelper.generateOTP();
@@ -200,13 +199,11 @@ public class CustomerServiceImp implements CustomerService {
         }
 
 
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
-
-
+        return null;
     }
 
     @Override
-    public Response verifyOtp(VerificationRequest request) throws BusinessException {
+    public CustomerObject verifyOtp(VerificationRequest request) throws BusinessException {
         GenericResponse<Customer> response = new GenericResponse<>();
         CustomerObject customerObject = null;
 
@@ -236,14 +233,12 @@ public class CustomerServiceImp implements CustomerService {
         Customer customer = customerHelper.getCustomerObject(customerCopy);
         customer = customerRepository.save(customer);
 
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.CUSTOMER_REGISTERED);
-
+        return null;
 
     }
 
     @Override
-    public Response forgatePassword(String email) throws BusinessException {
-        GenericResponse<ForgotPassword> response = new GenericResponse<>();
+    public ForgotPassword forgatePassword(String email) throws BusinessException {
         Customer customer = customerRepository.findByemail(email);
         if (customer == null) {
             throw new BusinessException(ResponseConstants.CUSTOMER_NOT_FOUND);
@@ -262,12 +257,12 @@ public class CustomerServiceImp implements CustomerService {
             forgotPasswordRepo.save(forgotPassword);
 
         }
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.MAIL_SEND_SUCCESSFULLY);
 
+        return null;
     }
 
     @Override
-    public Response forgetPasswordVerifyOtp(ResetPassword request) throws BusinessException {
+    public ResetPassword forgetPasswordVerifyOtp(ResetPassword request) throws BusinessException {
         GenericResponse<Customer> response = new GenericResponse<>();
         ForgotPassword forgotPassword = forgotPasswordRepo.findByemail(request.getEmail());
         String givenTime = String.valueOf(forgotPassword.getUpdatedAt()) + 0 + 0 + 0;
@@ -289,8 +284,8 @@ public class CustomerServiceImp implements CustomerService {
         String newPassword = passwordEncoder.encode(request.getNewPassword());
         customer.setPassword(newPassword);
         customerRepository.save(customer);
-        return response.createSuccessResponse(null, HttpStatus.OK.value(), ResponseConstants.PASSWORD_RESET);
 
+        return null;
     }
 
 }
