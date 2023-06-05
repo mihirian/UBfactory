@@ -1,9 +1,12 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.BannerObject;
 import com.example.ubfactory.objects.GenericResponse;
 import com.example.ubfactory.service.BannerService;
+import com.example.ubfactory.utils.Response;
+import com.example.ubfactory.utils.ResponseConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,27 +25,29 @@ public class BannerController {
     public BannerService bannerService;
 
     @PostMapping()
-    public ResponseEntity<Object> createBanner(@RequestBody BannerObject bannerObject) throws BusinessException {
+    public Response<BannerObject> createBanner(@RequestBody BannerObject bannerObject) throws BusinessException {
+        GenericResponse<BannerObject> response = new GenericResponse<>();
         try {
             logger.info("Getting request from ui for create banner{}", bannerObject);
             BannerObject saveBanner = bannerService.saveBanner(bannerObject);
-            return GenericResponse.genericResponse("Success", HttpStatus.CREATED, saveBanner);
+          return response.createSuccessResponse(saveBanner, HttpStatus.CREATED.value(), ResponseConstants.BANNER_CREATED_SUCCESSFULLY);
         } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+           return response.createErrorResponse(b.getErrorCode(),b.getMessage());
         } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
         }
     }
 
     @GetMapping()
-    public ResponseEntity<Object> GetBannerList() {
+    public Response<BannerObject> GetBannerList() {
+        GenericResponse<BannerObject> response = new GenericResponse<>();
         try {
             List<BannerObject> saveBanner = bannerService.getBannerList();
-            return new ResponseEntity<>(saveBanner, HttpStatus.OK);
+            return response.createSuccessListResponse(saveBanner);
         } catch (BusinessException b) {
-            return GenericResponse.genericResponse(b.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(b.getErrorCode(),b.getMessage());
         } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
         }
     }
 }

@@ -7,6 +7,7 @@ import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.RazorpayService;
 import com.example.ubfactory.utils.Response;
+import com.example.ubfactory.utils.ResponseConstants;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.slf4j.Logger;
@@ -28,45 +29,54 @@ public class OrderController {
     @PostMapping("/create-order")
 
     //create order
-     public ResponseEntity<?> createOrder(@RequestBody OrderRequestObject orderRequestObject) {
-         try {
-             OrderResponseObject requestObject = razorpayService.createOrder(orderRequestObject);
-             return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
+     public Response<?> createOrder(@RequestBody OrderRequestObject orderRequestObject) {
+        GenericResponse<OrderResponseObject> response = new GenericResponse<>();
+        try {
+            OrderResponseObject requestObject = razorpayService.createOrder(orderRequestObject);
+            return response.createSuccessResponse(requestObject, HttpStatus.CREATED.value(), ResponseConstants.ORDER_CREATED_SUCCESSFULLY);
+        }catch (BusinessException b){
+            return response.createErrorResponse(b.getErrorCode(),b.getMessage());
          } catch (Exception e) {
-             return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
          }
      }
 
      @PostMapping("/capture/payment")
-    public ResponseEntity<?> capturePayment(@RequestBody OrderRequestObject orderRequestObject) {
-        try {
+    public Response<?> capturePayment(@RequestBody OrderRequestObject orderRequestObject) {
+         GenericResponse<CapturePaymentResponse> response = new GenericResponse<>();
+         try {
             CapturePaymentResponse requestObject = razorpayService.capturePayment(orderRequestObject);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
-        } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
-        }
+             return response.createSuccessResponse(requestObject, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+        } catch (BusinessException b){
+             return response.createErrorResponse(b.getErrorCode(),b.getMessage());
+         } catch (Exception e) {
+             return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
+         }
     }
 
     @GetMapping("billgenrater/{id}")
-    public ResponseEntity<Object> billGenrater(@PathVariable int id) throws BusinessException {
+    public Response<?> billGenrater(@PathVariable int id) throws BusinessException {
+        GenericResponse<Response> response = new GenericResponse<>();
         try {
-            Response response = razorpayService.billGenrater(id);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.OK, response);
+            Response response1 = razorpayService.billGenrater(id);
+            return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
         } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
         }
     }
 
     @PostMapping("ordersearch")
-    public ResponseEntity<?> orderHistory(@RequestBody OrderRequestObject orderRequestObject) {
+    public Response<?> orderHistory(@RequestBody OrderRequestObject orderRequestObject) {
+        GenericResponse<OrderHistoryResponse> response = new GenericResponse<>();
         try {
             OrderHistoryResponse requestObject = razorpayService.orderhistory(orderRequestObject);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, requestObject);
+            return response.createSuccessResponse(requestObject, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+        } catch (BusinessException b){
+            return response.createErrorResponse(b.getErrorCode(),b.getMessage());
         } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401,ResponseConstants.REQUEST_TIME_OUT);
         }
     }
-
 
     }
 

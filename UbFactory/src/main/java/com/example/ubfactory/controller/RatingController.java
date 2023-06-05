@@ -1,8 +1,11 @@
 package com.example.ubfactory.controller;
 
 import com.example.ubfactory.enums.Status;
+import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.RatingService;
+import com.example.ubfactory.utils.Response;
+import com.example.ubfactory.utils.ResponseConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +24,24 @@ public class RatingController {
     private RatingService ratingService;
 
     @PostMapping()
-    public ResponseEntity<?> createRating(@RequestBody RatingRequestObject ratingRequestObject) {
+    public Response<?> createRating(@RequestBody RatingRequestObject ratingRequestObject) {
+        GenericResponse<String> response = new GenericResponse<>();
         try {
-            String response = ratingService.createRating(ratingRequestObject);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
+            String response1 = ratingService.createRating(ratingRequestObject);
+            return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
         } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
         }
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<?> getByProductId(@PathVariable Integer productId) {
+    public Response<?> getByProductId(@PathVariable Integer productId) {
+        GenericResponse<RatingRequestObject> response = new GenericResponse<>();
         try {
-            RatingRequestObject response = ratingService.getByProductId(productId);
-            return GenericResponse.genericResponse(Status.SUCCESS.getStatus(), HttpStatus.CREATED, response);
+            RatingRequestObject response1 = ratingService.getByProductId(productId);
+            return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
         } catch (Exception e) {
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
         }
     }
 

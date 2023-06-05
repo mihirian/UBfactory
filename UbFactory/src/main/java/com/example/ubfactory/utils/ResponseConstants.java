@@ -38,6 +38,10 @@ public interface ResponseConstants {
     public static final String SHEEPING_ADDRESS_UPDATE = "successfully sheeping address updated";
     public static final String REQUEST_TIME_OUT= "Request time out";
     public static final String REGISTRATION_VERIFICATION_MAIL= " Verification email  has been send successfully!!";
+    public static final String BANNER_CREATED_SUCCESSFULLY= "Banner_created_successfully";
+    public static final String ORDER_CREATED_SUCCESSFULLY= "Order_created_successfully";
+
+
 
 
 
