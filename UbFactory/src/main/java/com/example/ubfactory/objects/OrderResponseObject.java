@@ -19,4 +19,5 @@ public class OrderResponseObject {
     private Integer attempts;
     private String created_at;
     private Integer customerId;
+    private String url;
 }

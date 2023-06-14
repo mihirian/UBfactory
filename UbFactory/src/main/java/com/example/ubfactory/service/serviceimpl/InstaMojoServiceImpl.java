@@ -99,7 +99,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
 
         try {
             paymentOrderResponse = api.createPaymentOrder(order);
-            System.out.println(paymentOrderResponse.getPaymentOrder().getStatus());
+
 
         } catch (HTTPException e) {
             System.out.println(e.getStatusCode());
@@ -120,14 +120,14 @@ public class InstaMojoServiceImpl implements InstaMojoService {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<String> httpEntity = new HttpEntity<>(json.toString(), headers);
 
-        paymentSummary.setCreateOrderRequest(json.toString());
-        PaymentOrderResponse responseObject = gson.fromJson(json.toString(), PaymentOrderResponse.class);
+//        paymentSummary.setCreateOrderRequest(order.toString());
         paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
-        paymentSummary.setCreateOrderResponse(gson.toJson(responseObject));
+//        paymentSummary.setCreateOrderResponse(gson.toJson(paymentOrderResponse));
+        orderSummary.setRazorpayId(paymentOrderResponse.getPaymentOrder().getId());
 //        orderSummary.setRazorpayId(responseObject.getId());
         orderHelper.postCreateOrder(orderSummary);
         paymentRepository.save(paymentSummary);
-        OrderResponseObject orderResponseObject = orderHelper.getOrderResponsemojo(responseObject, orderSummary);
+        OrderResponseObject orderResponseObject = orderHelper.getOrderResponsemojo(paymentOrderResponse, orderSummary);
 
         return orderResponseObject;
     }

@@ -59,10 +59,11 @@ public class OrderHelper {
 //        orderResponseObject.setEntity(responseObject.getEntity());
 //        orderResponseObject.setAttempts(responseObject.getAttempts());
 //        orderResponseObject.setReceipt(responseObject.getReceipt());
-        orderResponseObject.setStatus(String.valueOf(responseObject.getPaymentOrder()));
+        orderResponseObject.setStatus(String.valueOf(responseObject.getPaymentOrder().getStatus()));
 //        orderResponseObject.setAmount_due(responseObject.getAmount_due());
 //        orderResponseObject.setOffer_id(responseObject.getOffer_id());
         orderResponseObject.setCustomerId(orderSummary.getCustomer().getId());
+        orderResponseObject.setUrl(responseObject.getPaymentOptions().getPaymentUrl());
 
 
         return orderResponseObject;
