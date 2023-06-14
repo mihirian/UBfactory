@@ -5,6 +5,7 @@ import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.objects.OrderResponseObject;
 import com.example.ubfactory.objects.RazorpayResponseObject;
 import com.example.ubfactory.repository.OrderSummaryRepository;
+import com.instamojo.wrapper.model.PaymentOrderResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,21 @@ public class OrderHelper {
         orderResponseObject.setStatus(responseObject.getStatus());
         orderResponseObject.setAmount_due(responseObject.getAmount_due());
         orderResponseObject.setOffer_id(responseObject.getOffer_id());
+        orderResponseObject.setCustomerId(orderSummary.getCustomer().getId());
+
+
+        return orderResponseObject;
+    }
+    public OrderResponseObject getOrderResponsemojo(PaymentOrderResponse responseObject, OrderSummary orderSummary ){
+        OrderResponseObject orderResponseObject = new OrderResponseObject();
+//        orderResponseObject.setAmount(responseObject.getAmount());
+//        orderResponseObject.setOrderId(responseObject.getId());
+//        orderResponseObject.setEntity(responseObject.getEntity());
+//        orderResponseObject.setAttempts(responseObject.getAttempts());
+//        orderResponseObject.setReceipt(responseObject.getReceipt());
+        orderResponseObject.setStatus(String.valueOf(responseObject.getPaymentOrder()));
+//        orderResponseObject.setAmount_due(responseObject.getAmount_due());
+//        orderResponseObject.setOffer_id(responseObject.getOffer_id());
         orderResponseObject.setCustomerId(orderSummary.getCustomer().getId());
 
 
