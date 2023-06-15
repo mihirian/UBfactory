@@ -5,9 +5,7 @@ import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.OrderHelper;
 import com.example.ubfactory.helper.PaymentHelper;
-import com.example.ubfactory.objects.OrderRequestObject;
-import com.example.ubfactory.objects.OrderResponseObject;
-import com.example.ubfactory.objects.RazorpayResponseObject;
+import com.example.ubfactory.objects.*;
 import com.example.ubfactory.repository.*;
 import com.example.ubfactory.service.InstaMojoService;
 import com.example.ubfactory.validator.OrderVaildator;
@@ -20,6 +18,7 @@ import com.instamojo.wrapper.exception.ConnectionException;
 import com.instamojo.wrapper.exception.HTTPException;
 import com.instamojo.wrapper.model.PaymentOrder;
 import com.instamojo.wrapper.model.PaymentOrderResponse;
+import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -92,7 +91,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
         order.setAmount((double) amount);
         order.setDescription("This is a test transaction.");
         order.setRedirectUrl("http://www.someexample.com");
-        order.setWebhookUrl("http://www.someurl.com/");
+        order.setWebhookUrl("http://ubfactoryjava-env.eba-rx3hpjez.ap-south-1.elasticbeanstalk.com/razorpay/instamojo/capture-order");
         order.setTransactionId(String.valueOf(orderSummary.getId()));
         PaymentOrderResponse paymentOrderResponse = null;
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -130,5 +129,42 @@ public class InstaMojoServiceImpl implements InstaMojoService {
         OrderResponseObject orderResponseObject = orderHelper.getOrderResponsemojo(paymentOrderResponse, orderSummary);
 
         return orderResponseObject;
+    }
+
+    @Override
+    public CapturePaymentResponse capturePayment(InstaMojoCallBackRequest orderRequestObject) throws BusinessException, RazorpayException {
+        paymentHelper.validateInstaCapturePayment(orderRequestObject);
+        OrderSummary orderSummary = orderSummaryRepository.findByRazorpayId(orderRequestObject.getPayment_request_id());
+        if (orderSummary == null) {
+            throw new BusinessException("Order detail not found");
+        }
+        PaymentSummary paymentSummary = paymentRepository.findByOrderId(orderSummary.getId());
+        if (paymentSummary == null) {
+            throw new BusinessException("Payment detail not found");
+        }
+        paymentSummary.setPaymentId(orderRequestObject.getPayment_id());
+
+
+        if (orderRequestObject.getStatus().equalsIgnoreCase("Credit")) {
+            paymentSummary.setPaymentStatus(Status.SUCCESS.getStatus());
+            orderSummary.setOrderStatus(Status.SUCCESS.getStatus());
+            orderSummary.setPaymentStatus(Status.SUCCESS.getStatus());
+            paymentRepository.save(paymentSummary);
+            orderSummaryRepository.save(orderSummary);
+        } else if (orderRequestObject.getStatus().equalsIgnoreCase("Failed")) {
+            paymentSummary.setPaymentStatus(Status.FAILURE.getStatus());
+            orderSummary.setOrderStatus(Status.FAILURE.getStatus());
+            orderSummary.setPaymentStatus(Status.FAILURE.getStatus());
+            paymentRepository.save(paymentSummary);
+            orderSummaryRepository.save(orderSummary);
+        } else {
+            paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
+            orderSummary.setOrderStatus(Status.PENDING.getStatus());
+            orderSummary.setPaymentStatus(Status.PENDING.getStatus());
+            paymentRepository.save(paymentSummary);
+            orderSummaryRepository.save(orderSummary);
+        }
+        CapturePaymentResponse capturePaymentResponse=new CapturePaymentResponse();
+        return capturePaymentResponse;
     }
 }

@@ -4,6 +4,7 @@ import com.example.ubfactory.entities.OrderSummary;
 import com.example.ubfactory.entities.PaymentSummary;
 import com.example.ubfactory.enums.Status;
 import com.example.ubfactory.exception.BusinessException;
+import com.example.ubfactory.objects.InstaMojoCallBackRequest;
 import com.example.ubfactory.objects.OrderRequestObject;
 import com.example.ubfactory.repository.PaymentRepository;
 import org.slf4j.Logger;
@@ -44,6 +45,14 @@ public class PaymentHelper {
         if (ObjectUtils.isEmpty(orderRequestObject.getRazorpayId())) {
             throw new BusinessException("razorpay order id not found.");
         }
+
+    }
+    public void validateInstaCapturePayment(InstaMojoCallBackRequest orderRequestObject) throws BusinessException {
+        if (ObjectUtils.isEmpty(orderRequestObject.getPayment_id())) {
+            throw new BusinessException("Payment id not found.");
+        }
+
+
 
     }
 }

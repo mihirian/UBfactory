@@ -97,9 +97,9 @@ public class OrderController {
     }
     @PostMapping("/instamojo/capture-order")
     //create order
-    public ResponseEntity<?> capturePaymentInstaMojo(@RequestBody OrderRequestObject orderRequestObject) {
+    public ResponseEntity<?> capturePaymentInstaMojo(@RequestBody InstaMojoCallBackRequest orderRequestObject) {
         try {
-            OrderResponseObject requestObject = instaMojoService.createOrder(orderRequestObject);
+            CapturePaymentResponse requestObject = instaMojoService.capturePayment(orderRequestObject);
             return GenericResponse.genericResponse("Success", HttpStatus.CREATED, requestObject);
         } catch (Exception e) {
             return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
