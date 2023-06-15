@@ -206,14 +206,10 @@ public class RazorpayServiceImpl implements RazorpayService {
     public OrderHistoryResponse orderhistory(OrderRequestObject orderRequestObject) throws BusinessException {
        OrderHistoryResponse historyResponse = new OrderHistoryResponse();
         if (orderRequestObject.getOwnerType() != "ADMIN" && orderRequestObject.getCustomerId() != 0) {
-//            Customer customer = customerRepository.findById(orderRequestObject.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
-//            Cart cart = cartRepository.findByCustomer(customer).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-//            List<CartItem> cartItems = cartItemRepository.findAllByCart(cart);
             List<OrderSummary> orderSummary = orderSummaryRepository.findAllByCustomerId(orderRequestObject.getCustomerId());
             if (orderSummary == null) {
                 throw new BusinessException("Order history not found");
             }
-//            OrderHistoryResponse historyItem = new OrderHistoryResponse();
             List<OrderHistoryResponse> orderHistoryItems = new ArrayList<>();
             for (OrderSummary orderSummary1 : orderSummary) {
                 OrderHistoryResponse historyItem = new OrderHistoryResponse();

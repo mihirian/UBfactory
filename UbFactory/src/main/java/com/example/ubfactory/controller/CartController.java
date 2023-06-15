@@ -1,7 +1,10 @@
 package com.example.ubfactory.controller;
 
+import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.service.CartService;
+import com.example.ubfactory.utils.Response;
+import com.example.ubfactory.utils.ResponseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,44 +20,55 @@ public class CartController {
 
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<CartResponse> getCartItems(@PathVariable Integer customerId) {
-        CartResponse response = cartService.getCartItems(customerId);
-        return ResponseEntity.ok(response);
+    public Response<CartResponse> getCartItems(@PathVariable Integer customerId) {
+        GenericResponse<CartResponse> response = new GenericResponse<>();
+        try{
+            CartResponse response1 = cartService.getCartItems(customerId);
+            return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+        }catch (Exception e) {
+            return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+        }
     }
 
     @PostMapping("/{customerId}/items")
-    public ResponseEntity<CartItemResponse> addCartItem(
-            @PathVariable Integer customerId,
-            @Valid @RequestBody AddCartItemRequest request) {
-        CartItemResponse response = cartService.addCartItem(customerId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public Response<CartItemResponse> addCartItem(@PathVariable Integer customerId, @Valid @RequestBody AddCartItemRequest request) {
+        GenericResponse<CartItemResponse> response = new GenericResponse<>();
+        try {
+            CartItemResponse response1 = cartService.addCartItem(customerId, request);
+            return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+        } catch (BusinessException b) {
+            return response.createErrorResponse(b.getErrorCode(), b.getMessage());
+        } catch (Exception e) {
+            return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+        }
+
     }
 
     @PutMapping("/{customerId}/items/{productId}")
-    public ResponseEntity<CartItemResponse> updateCartItemQuantity(
-            @PathVariable Integer customerId,
-            @PathVariable Integer productId,
-            @Valid @RequestBody UpdateCartItemRequest request) {
-        CartItemResponse response = cartService.updateCartItemQuantity(customerId, productId, request);
-        return ResponseEntity.ok(response);
+    public Response<CartItemResponse> updateCartItemQuantity(@PathVariable Integer customerId, @PathVariable Integer productId, @Valid @RequestBody UpdateCartItemRequest request) {
+        GenericResponse<CartItemResponse> response = new GenericResponse<>();
+        try{
+            CartItemResponse response1 = cartService.updateCartItemQuantity(customerId, productId, request);
+            return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+        }catch (Exception e) {
+            return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
+        }
     }
 
     @DeleteMapping("/{customerId}/items/{productId}")
-    public ResponseEntity<Void> deleteCartItem(
-            @PathVariable Integer customerId,
-            @PathVariable Integer productId) {
+    public ResponseEntity<Void> deleteCartItem(@PathVariable Integer customerId, @PathVariable Integer productId) {
         cartService.deleteCartItem(customerId, productId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{customerId}/cart")
-    public ResponseEntity<Object> getCartItemsWithShipping(@PathVariable Integer customerId) {
+    public Response<?> getCartItemsWithShipping(@PathVariable Integer customerId) {
+        GenericResponse<CartItemPriceResponse> response = new GenericResponse<>();
         try {
-            CartItemPriceResponse response = cartService.getCartItemsWithShipping(customerId);
-             return GenericResponse.genericResponse("Success", HttpStatus.CREATED, response);
-        }
-        catch (Exception e){
-            return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
+            CartItemPriceResponse response1 = cartService.getCartItemsWithShipping(customerId);
+            return response.createSuccessResponse(response1, HttpStatus.OK.value(), ResponseConstants.SUCCESS);
+        } catch (Exception e) {
+            return response.createErrorResponse(401, ResponseConstants.REQUEST_TIME_OUT);
         }
     }
 

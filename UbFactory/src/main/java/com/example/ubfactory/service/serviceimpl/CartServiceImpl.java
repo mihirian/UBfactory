@@ -1,6 +1,7 @@
 package com.example.ubfactory.service.serviceimpl;
 
 import com.example.ubfactory.entities.*;
+import com.example.ubfactory.exception.BusinessException;
 import com.example.ubfactory.helper.CartMapper;
 import com.example.ubfactory.objects.*;
 import com.example.ubfactory.repository.*;
@@ -46,7 +47,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartItemResponse addCartItem(Integer customerId, AddCartItemRequest request) {
+    public CartItemResponse addCartItem(Integer customerId, AddCartItemRequest request) throws BusinessException {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
         Cart cart = cartRepository.findByCustomer(customer).orElseGet(() -> createCartForCustomer(customer));
@@ -58,7 +59,7 @@ public class CartServiceImpl implements CartService {
                 .anyMatch(item -> item.getProduct().equals(product));
 
         if (productAlreadyInCart) {
-            throw new IllegalStateException("Product is already in the cart");
+             throw new BusinessException("Product is already in the cart");
         }
 
         CartItem cartItem = CartMapper.toCartItem(request, cart, product);
@@ -77,7 +78,7 @@ public class CartServiceImpl implements CartService {
         if (savedCartItem.isPresent()) {
             return CartMapper.toCartItemResponse(savedCartItem.get());
         } else {
-            throw new IllegalStateException("Failed to save CartItem");
+            throw new BusinessException("Failed to save CartItem");
         }
     }
 
