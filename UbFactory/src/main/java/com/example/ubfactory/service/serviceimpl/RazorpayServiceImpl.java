@@ -69,8 +69,9 @@ public class RazorpayServiceImpl implements RazorpayService {
         Cart cart = orderVaildator.validateOrderRequest(orderRequestObject);
         List<CartItem> cartItem = cartItemRepository.findAllByCart(cart);
         Shipping shipping = shippingRepository.findById(1).get();
-        OrderSummary orderSummary = orderHelper.createOrderSummary(cart, shipping);
         AtomicReference<BigDecimal> totalPrice = new AtomicReference<BigDecimal>(new BigDecimal(0.00));
+        OrderSummary orderSummary = orderHelper.createOrderSummary(cart,totalPrice, shipping);
+
         List<OrderItem> orderItemList =new ArrayList<>();
         cartItem.forEach((ele) -> {
             Product product = ele.getProduct();

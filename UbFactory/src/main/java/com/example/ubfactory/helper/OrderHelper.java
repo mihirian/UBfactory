@@ -6,6 +6,7 @@ import com.example.ubfactory.objects.OrderRequestObject;
 import com.example.ubfactory.objects.OrderResponseObject;
 import com.example.ubfactory.objects.RazorpayResponseObject;
 import com.example.ubfactory.repository.OrderSummaryRepository;
+import com.instamojo.wrapper.model.PaymentOrderResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,10 @@ public class OrderHelper {
     public void calculatePriceWithQuantity(CartItem cartItem, Optional<Product> product) {
     }
 
-    public OrderSummary createOrderSummary(Cart cart, Shipping shipping) {
+    public OrderSummary createOrderSummary(Cart cart, AtomicReference<BigDecimal> totalPrice,Shipping shipping) {
         OrderSummary orderSummary = new OrderSummary();
         orderSummary.setCustomer(cart.getCustomer());
-//        orderSummary.setTotalPrice(totalPrice);
+        orderSummary.setTotalPrice(totalPrice.get());
         orderSummary.setOrderStatus(Status.INITIATED.getStatus());
         orderSummary.setPaymentStatus(Status.INITIATED.getStatus());
         orderSummary.setCreatedAt(new Date());
@@ -52,6 +53,22 @@ public class OrderHelper {
 
 
        return orderResponseObject;
+    }
+    public OrderResponseObject getOrderResponsemojo(PaymentOrderResponse responseObject, OrderSummary orderSummary ){
+        OrderResponseObject orderResponseObject = new OrderResponseObject();
+//        orderResponseObject.setAmount(responseObject.getAmount());
+//        orderResponseObject.setOrderId(responseObject.getId());
+//        orderResponseObject.setEntity(responseObject.getEntity());
+//        orderResponseObject.setAttempts(responseObject.getAttempts());
+//        orderResponseObject.setReceipt(responseObject.getReceipt());
+        orderResponseObject.setStatus(String.valueOf(responseObject.getPaymentOrder().getStatus()));
+//        orderResponseObject.setAmount_due(responseObject.getAmount_due());
+//        orderResponseObject.setOffer_id(responseObject.getOffer_id());
+        orderResponseObject.setCustomerId(orderSummary.getCustomer().getId());
+        orderResponseObject.setUrl(responseObject.getPaymentOptions().getPaymentUrl());
+
+
+        return orderResponseObject;
     }
 
     public void postCreateOrder(OrderSummary orderSummary) {
