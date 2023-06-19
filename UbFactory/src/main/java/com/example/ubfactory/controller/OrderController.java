@@ -23,6 +23,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
+
+
+
 @RestController
 @RequestMapping("/razorpay")
 public class OrderController {
@@ -96,17 +101,40 @@ public class OrderController {
         }
     }
     @PostMapping("/instamojo/capture-order")
-    //create order
-    public ResponseEntity<?> capturePaymentInstaMojo(@RequestBody InstaMojoCallBackRequest orderRequestObject) {
+    public ResponseEntity<?> capturePaymentInstaMojo(HttpServletRequest httpRequest,@ModelAttribute InstaMojoCallBackRequest orderRequestObject) {
         try {
+            String requestBody = httpRequest.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            System.out.println("Request body: " + requestBody);
+            System.out.println(" body: " + orderRequestObject);
+            logger.info("Request body: " + requestBody);
+            logger.info(" body: " + orderRequestObject);
+
+//            InstaMojoCallBackRequest orderRequestObject = new InstaMojoCallBackRequest();
+//            if(amount != null) orderRequestObject.setAmount(amount);
+//            if(buyer != null) orderRequestObject.setBuyer(buyer);
+//            if(buyer_name != null) orderRequestObject.setBuyer_name(buyer_name);
+//            if(buyer_phone != null) orderRequestObject.setBuyer_phone(buyer_phone);
+//            if(currency != null) orderRequestObject.setCurrency(currency);
+//            if(fees != null) orderRequestObject.setFees(fees);
+//            if(longurl != null) orderRequestObject.setLongurl(longurl);
+//            if(mac != null) orderRequestObject.setMac(mac);
+//            if(payment_id != null) orderRequestObject.setPayment_id(payment_id);
+//            if(payment_request_id != null) orderRequestObject.setPayment_request_id(payment_request_id);
+//            if(purpose != null) orderRequestObject.setPurpose(purpose);
+//            if(shorturl != null) orderRequestObject.setShorturl(shorturl);
+//            if(status != null) orderRequestObject.setStatus(status);
+
             CapturePaymentResponse requestObject = instaMojoService.capturePayment(orderRequestObject);
             return GenericResponse.genericResponse("Success", HttpStatus.CREATED, requestObject);
         } catch (Exception e) {
+            System.err.println("Error while processing request: " + e.getMessage());
+            e.printStackTrace();
             return GenericResponse.genericResponse(e.getMessage(), HttpStatus.MULTI_STATUS, null);
         }
     }
 
 
-    }
+
+}
 
 
