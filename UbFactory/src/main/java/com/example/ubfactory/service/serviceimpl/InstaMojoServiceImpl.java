@@ -136,7 +136,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
         else {
             OrderResponseObject orderResponseObject = orderHelper.getOrderResponseCashOnDelevery( cartItem,orderSummary);
 //            String mail=(customer.getEmail());
-            String mail="adnanashif2@gmail.com";
+            String mail="mihirvermamihir98@gmail.com";
 
             // Share the quantity of items and total amount
             List<ItemDetails> itemDetailsList = new ArrayList<>();
@@ -151,7 +151,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
             orderResponseObject.setAmount(totalPrice.get().intValue());
 
             // Send the email
-            orderHelper.sendOrderDetailsEmail(mail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
+            orderHelper.sendOrderDetailsEmail(customer,mail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
 
             return orderResponseObject;
         }

@@ -92,7 +92,9 @@ public class OrderHelper {
 //        orderResponseObject.setEntity(responseObject.getEntity());
         return orderResponseObject;
     }
-    public void sendOrderDetailsEmail(String recipientEmail, List<ItemDetails> itemDetailsList, BigDecimal totalAmount) {
+    public void sendOrderDetailsEmail(Customer customer, String recipientEmail, List<ItemDetails> itemDetailsList, BigDecimal totalAmount)
+    {
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(recipientEmail);
         message.setSubject("Order Confirmation - Order Details");
@@ -100,6 +102,12 @@ public class OrderHelper {
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("Dear Customer,\n\n");
         emailContent.append("Thank you for your order. We are pleased to confirm your purchase. Below are the details of your order:\n\n");
+        emailContent.append("Delivery Address:\n");
+        emailContent.append("Address: ").append(customer.getAddresses()).append("\n");
+        emailContent.append("City: ").append(customer.getTown()).append("\n");
+        emailContent.append("State: ").append(customer.getState()).append("\n");
+        emailContent.append("Postal Code: ").append(customer.getPinCode()).append("\n\n");
+        emailContent.append("Street address").append(customer.getStreetAddress()).append("\n\n");
         emailContent.append("Total Items: ").append(itemDetailsList.size()).append("\n\n");
 
         for (ItemDetails itemDetails : itemDetailsList) {
