@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -57,6 +58,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
     private OrderSummaryRepository orderSummaryRepository;
     @Autowired
     private CustomerRepository customerRepository;
+
     @Override
     public OrderResponseObject createOrder(OrderRequestObject orderRequestObject) throws BusinessException {
         Cart cart = orderVaildator.validateOrderRequest(orderRequestObject);
@@ -80,55 +82,80 @@ public class InstaMojoServiceImpl implements InstaMojoService {
         OrderSummary orderSummary = orderHelper.createOrderSummary(cart,  totalPrice,shipping);
         PaymentSummary paymentSummary = paymentHelper.createPaymentSummary(orderSummary);
         int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
+        String paymentMode = orderRequestObject.getPaymentMode();
+        if (!paymentMode.equalsIgnoreCase("Cash on delivery")) {
+            ApiContext context = ApiContext.create("test_MbsW2GTepwF7plQ9ZdhWX7NfBupRAB61Fyx", "test_LaA6mltdHvwRyDJCdrMXIsQIGIgWrr7GRqUGGiD7qBE9emkeL5KBqGGBneGBILQnuXf1MIYuiQoNpGhQbMUXo90XNmV6ubcnh4F2gf8Do9omeIBqrpwLxX5fnTL", ApiContext.Mode.TEST);
+            Instamojo api = new InstamojoImpl(context);
+            PaymentOrder order = new PaymentOrder();
+            order.setName(customer.getFirstName() + " " + customer.getLastName());
+            order.setEmail(customer.getEmail());
+            order.setPhone(customer.getMobile());
+            order.setCurrency("INR");
+            order.setAmount((double) amount);
+            order.setDescription("This is a test transaction.");
+            order.setRedirectUrl("http://www.someexample.com");
+            order.setWebhookUrl("http://ubfactoryjava-env.eba-rx3hpjez.ap-south-1.elasticbeanstalk.com/razorpay/instamojo/capture-order");
+            order.setTransactionId(String.valueOf(orderSummary.getId()));
+            PaymentOrderResponse paymentOrderResponse = null;
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        ApiContext context = ApiContext.create("test_MbsW2GTepwF7plQ9ZdhWX7NfBupRAB61Fyx", "test_LaA6mltdHvwRyDJCdrMXIsQIGIgWrr7GRqUGGiD7qBE9emkeL5KBqGGBneGBILQnuXf1MIYuiQoNpGhQbMUXo90XNmV6ubcnh4F2gf8Do9omeIBqrpwLxX5fnTL", ApiContext.Mode.TEST);
-        Instamojo api = new InstamojoImpl(context);
-        PaymentOrder order = new PaymentOrder();
-        order.setName(customer.getFirstName()+" "+customer.getLastName());
-        order.setEmail(customer.getEmail());
-        order.setPhone(customer.getMobile());
-        order.setCurrency("INR");
-        order.setAmount((double) amount);
-        order.setDescription("This is a test transaction.");
-        order.setRedirectUrl("http://www.someexample.com");
-        order.setWebhookUrl("http://ubfactoryjava-env.eba-rx3hpjez.ap-south-1.elasticbeanstalk.com/razorpay/instamojo/capture-order");
-        order.setTransactionId(String.valueOf(orderSummary.getId()));
-        PaymentOrderResponse paymentOrderResponse = null;
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        try {
-            paymentOrderResponse = api.createPaymentOrder(order);
+            try {
+                paymentOrderResponse = api.createPaymentOrder(order);
 
 
-        } catch (HTTPException e) {
-            System.out.println(e.getStatusCode());
-            System.out.println(e.getMessage());
-            System.out.println(e.getJsonPayload());
+            } catch (HTTPException e) {
+                System.out.println(e.getStatusCode());
+                System.out.println(e.getMessage());
+                System.out.println(e.getJsonPayload());
 
-        } catch (ConnectionException e) {
-            System.out.println(e.getMessage());
-        }
+            } catch (ConnectionException e) {
+                System.out.println(e.getMessage());
+            }
 
-        JSONObject json = new JSONObject();
-        json.put("amount", amount);
-        json.put("currency", paymentSummary.getCurrency());
+            JSONObject json = new JSONObject();
+            json.put("amount", amount);
+            json.put("currency", paymentSummary.getCurrency());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<String> httpEntity = new HttpEntity<>(json.toString(), headers);
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<String> httpEntity = new HttpEntity<>(json.toString(), headers);
 
 //        paymentSummary.setCreateOrderRequest(order.toString());
-        paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
+            paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
 //        paymentSummary.setCreateOrderResponse(gson.toJson(paymentOrderResponse));
-        orderSummary.setRazorpayId(paymentOrderResponse.getPaymentOrder().getId());
+            orderSummary.setRazorpayId(paymentOrderResponse.getPaymentOrder().getId());
 //        orderSummary.setRazorpayId(responseObject.getId());
-        orderHelper.postCreateOrder(orderSummary);
-        paymentRepository.save(paymentSummary);
-        OrderResponseObject orderResponseObject = orderHelper.getOrderResponsemojo(paymentOrderResponse, orderSummary);
+            orderHelper.postCreateOrder(orderSummary);
+            paymentRepository.save(paymentSummary);
 
-        return orderResponseObject;
+            OrderResponseObject orderResponseObject = orderHelper.getOrderResponsemojo(paymentOrderResponse, orderSummary);
+            return orderResponseObject;
+        }
+        else {
+            OrderResponseObject orderResponseObject = orderHelper.getOrderResponseCashOnDelevery( cartItem,orderSummary);
+//            String mail=(customer.getEmail());
+            String mail="adnanashif2@gmail.com";
+
+            // Share the quantity of items and total amount
+            List<ItemDetails> itemDetailsList = new ArrayList<>();
+            cartItem.forEach((ele) -> {
+                ItemDetails itemDetails = new ItemDetails();
+                itemDetails.setName(ele.getProduct().getName());
+                itemDetails.setQuantity(String.valueOf(ele.getQuantity()));
+                itemDetailsList.add(itemDetails);
+            });
+
+            orderResponseObject.setItemDetail(itemDetailsList.toString());
+            orderResponseObject.setAmount(totalPrice.get().intValue());
+
+            // Send the email
+            orderHelper.sendOrderDetailsEmail(mail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
+
+            return orderResponseObject;
+        }
+
     }
 
     @Override

@@ -20,4 +20,5 @@ public class OrderResponseObject {
     private String created_at;
     private Integer customerId;
     private String url;
+     private String  itemDetail;
 }

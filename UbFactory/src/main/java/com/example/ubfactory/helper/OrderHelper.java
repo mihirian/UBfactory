@@ -2,7 +2,7 @@ package com.example.ubfactory.helper;
 
 import com.example.ubfactory.entities.*;
 import com.example.ubfactory.enums.Status;
-import com.example.ubfactory.objects.OrderRequestObject;
+import com.example.ubfactory.objects.ItemDetails;
 import com.example.ubfactory.objects.OrderResponseObject;
 import com.example.ubfactory.objects.RazorpayResponseObject;
 import com.example.ubfactory.repository.OrderSummaryRepository;
@@ -10,10 +10,13 @@ import com.instamojo.wrapper.model.PaymentOrderResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,6 +25,8 @@ public class OrderHelper {
     public static final Logger logger = LoggerFactory.getLogger(OrderHelper.class);
     @Autowired
     private OrderSummaryRepository orderSummaryRepository;
+    @Autowired
+     private JavaMailSender javaMailSender;
     public void calculatePriceWithQuantity(CartItem cartItem, Optional<Product> product) {
     }
 
@@ -76,4 +81,41 @@ public class OrderHelper {
         orderSummary.setPaymentStatus(Status.PENDING.getStatus());
         orderSummaryRepository.save(orderSummary);
     }
+
+    public OrderResponseObject getOrderResponseCashOnDelevery(List<CartItem> cartItem, OrderSummary orderSummary)
+    {
+        OrderResponseObject orderResponseObject = new OrderResponseObject();
+        orderResponseObject.setAmount(orderSummary.getTotalPrice().intValue());
+
+
+//        orderResponseObject.setOrderId(responseObject.getId());
+//        orderResponseObject.setEntity(responseObject.getEntity());
+        return orderResponseObject;
+    }
+    public void sendOrderDetailsEmail(String recipientEmail, List<ItemDetails> itemDetailsList, BigDecimal totalAmount) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(recipientEmail);
+        message.setSubject("Order Confirmation - Order Details");
+
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Dear Customer,\n\n");
+        emailContent.append("Thank you for your order. We are pleased to confirm your purchase. Below are the details of your order:\n\n");
+        emailContent.append("Total Items: ").append(itemDetailsList.size()).append("\n\n");
+
+        for (ItemDetails itemDetails : itemDetailsList) {
+            emailContent.append("Product: ").append(itemDetails.getName()).append("\n");
+            emailContent.append("Quantity: ").append(itemDetails.getQuantity()).append("\n\n");
+        }
+
+        emailContent.append("Total Amount: $").append(totalAmount).append("\n\n");
+        emailContent.append("Thank you for choosing our service. If you have any further questions or concerns, please feel free to contact our customer support team.\n\n");
+        emailContent.append("Best regards,\n");
+        emailContent.append("Your Company Name");
+
+        message.setText(emailContent.toString());
+
+        javaMailSender.send(message);
+
+    }
+
 }
