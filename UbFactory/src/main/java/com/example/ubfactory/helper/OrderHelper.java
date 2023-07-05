@@ -103,7 +103,7 @@ public class OrderHelper {
         emailContent.append("Dear Customer,\n\n");
         emailContent.append("Thank you for your order. We are pleased to confirm your purchase. Below are the details of your order:\n\n");
         emailContent.append("Delivery Address:\n");
-        emailContent.append("Address: ").append(customer.getAddresses()).append("\n");
+        emailContent.append("Address: ").append(customer.getStreetAddress()).append("\n");
         emailContent.append("City: ").append(customer.getTown()).append("\n");
         emailContent.append("State: ").append(customer.getState()).append("\n");
         emailContent.append("Postal Code: ").append(customer.getPinCode()).append("\n\n");

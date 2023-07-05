@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -58,32 +59,48 @@ public class InstaMojoServiceImpl implements InstaMojoService {
     private OrderSummaryRepository orderSummaryRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Override
     public OrderResponseObject createOrder(OrderRequestObject orderRequestObject) throws BusinessException {
         Cart cart = orderVaildator.validateOrderRequest(orderRequestObject);
         List<CartItem> cartItem = cartItemRepository.findAllByCart(cart);
+        Shipping shipping = shippingRepository.findById(1).get();
+
         AtomicReference<BigDecimal> totalPrice = new AtomicReference<BigDecimal>(new BigDecimal(0.00));
+        OrderSummary orderSummary = orderHelper.createOrderSummary(cart,totalPrice, shipping);
+        List<OrderItem> orderItemList =new ArrayList<>();
+
         cartItem.forEach((ele) -> {
             Product product = ele.getProduct();
             BigDecimal price = product.getPrice();
             Integer quantity = ele.getQuantity();
+            OrderItem orderItem =new OrderItem();
+            orderItem.setPrice(price);
+            orderItem.setQuantity(quantity);
+            orderItem.setCreatedAt(new Date());
+            orderItem.setUpdatedAt(new Date());
+            orderItem.setProduct(product);
+            orderItem.setOrderSummary(orderSummary);
+            orderItemList.add(orderItem);
             BigDecimal currentProdcutTotalPrice = price.multiply(new BigDecimal(quantity));
             totalPrice.updateAndGet(v -> v.add(currentProdcutTotalPrice));
         });
-
+        totalPrice.updateAndGet(v->v.add(shippingRepository.findById(1).get().getCharges()));
         if (orderRequestObject.getAmount().compareTo(totalPrice.get()) != 0) {
             throw new BusinessException("Requested amount and total amount is not equal.");
         }
-
-        Shipping shipping = shippingRepository.findById(1).get();
         Customer customer = customerRepository.findById(orderRequestObject.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
-        OrderSummary orderSummary = orderHelper.createOrderSummary(cart,  totalPrice,shipping);
+        orderItemRepository.saveAll(orderItemList);
+        orderSummary.setTotalPrice(totalPrice.get());
+        orderSummaryRepository.save(orderSummary);
+
         PaymentSummary paymentSummary = paymentHelper.createPaymentSummary(orderSummary);
-        int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
+        int amount = paymentSummary.getAmount().multiply(new BigDecimal(1)).intValue();
         String paymentMode = orderRequestObject.getPaymentMode();
-        if (!paymentMode.equalsIgnoreCase("Cash on delivery")) {
+        if (!paymentMode.equalsIgnoreCase("COD")) {
             ApiContext context = ApiContext.create("test_MbsW2GTepwF7plQ9ZdhWX7NfBupRAB61Fyx", "test_LaA6mltdHvwRyDJCdrMXIsQIGIgWrr7GRqUGGiD7qBE9emkeL5KBqGGBneGBILQnuXf1MIYuiQoNpGhQbMUXo90XNmV6ubcnh4F2gf8Do9omeIBqrpwLxX5fnTL", ApiContext.Mode.TEST);
             Instamojo api = new InstamojoImpl(context);
             PaymentOrder order = new PaymentOrder();
@@ -131,6 +148,8 @@ public class InstaMojoServiceImpl implements InstaMojoService {
             paymentRepository.save(paymentSummary);
 
             OrderResponseObject orderResponseObject = orderHelper.getOrderResponsemojo(paymentOrderResponse, orderSummary);
+            cartItemRepository.deleteByCart(cart);
+
             return orderResponseObject;
         }
         else {
@@ -152,6 +171,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
 
             // Send the email
             orderHelper.sendOrderDetailsEmail(customer,mail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
+            cartItemRepository.deleteByCart(cart);
 
             return orderResponseObject;
         }
