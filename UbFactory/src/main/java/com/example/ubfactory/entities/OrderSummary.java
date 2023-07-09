@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class OrderSummary extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @Column(name = "order_status")

@@ -22,6 +22,9 @@ import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,10 +33,15 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+
 @Service
 public class InstaMojoServiceImpl implements InstaMojoService {
     @Autowired
@@ -79,7 +87,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
         Shipping shipping = shippingRepository.findById(1).get();
         Customer customer = customerRepository.findById(orderRequestObject.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
-        OrderSummary orderSummary = orderHelper.createOrderSummary(cart,  totalPrice,shipping);
+        OrderSummary orderSummary = orderHelper.createOrderSummary(cart, totalPrice, shipping);
         PaymentSummary paymentSummary = paymentHelper.createPaymentSummary(orderSummary);
         int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
         String paymentMode = orderRequestObject.getPaymentMode();
@@ -132,11 +140,10 @@ public class InstaMojoServiceImpl implements InstaMojoService {
 
             OrderResponseObject orderResponseObject = orderHelper.getOrderResponsemojo(paymentOrderResponse, orderSummary);
             return orderResponseObject;
-        }
-        else {
-            OrderResponseObject orderResponseObject = orderHelper.getOrderResponseCashOnDelevery( cartItem,orderSummary);
+        } else {
+            OrderResponseObject orderResponseObject = orderHelper.getOrderResponseCashOnDelevery(cartItem, orderSummary);
 //            String mail=(customer.getEmail());
-            String mail="mihirvermamihir98@gmail.com";
+            String mail = "mihirvermamihir98@gmail.com";
 
             // Share the quantity of items and total amount
             List<ItemDetails> itemDetailsList = new ArrayList<>();
@@ -151,7 +158,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
             orderResponseObject.setAmount(totalPrice.get().intValue());
 
             // Send the email
-            orderHelper.sendOrderDetailsEmail(customer,mail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
+            orderHelper.sendOrderDetailsEmail(customer, mail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
 
             return orderResponseObject;
         }
@@ -191,7 +198,64 @@ public class InstaMojoServiceImpl implements InstaMojoService {
             paymentRepository.save(paymentSummary);
             orderSummaryRepository.save(orderSummary);
         }
-        CapturePaymentResponse capturePaymentResponse=new CapturePaymentResponse();
+        CapturePaymentResponse capturePaymentResponse = new CapturePaymentResponse();
         return capturePaymentResponse;
     }
-}
+
+    @Override
+    public UpdateOrderObject updateOrderSummery(UpdateOrderObject updateOrderObject) throws BusinessException {
+        Optional<OrderSummary> orderSummary = orderSummaryRepository.findById(updateOrderObject.getOrderid());
+        if (!orderSummary.isPresent()) {
+            throw new BusinessException("orderId not found");
+        }
+        OrderSummary orderSummary1 = orderSummary.get();
+        ;
+        orderSummary1.setOrderStatus(updateOrderObject.getOrderStatus());
+        orderSummary1.setPaymentStatus(updateOrderObject.getPaymentStatus());
+        orderSummary1.setRefundStatus(updateOrderObject.getRefundStatus());
+        orderSummary1.setUpdatedAt(new Date());
+        orderSummaryRepository.save(orderSummary1);
+        updateOrderObject.setMessage("Order updated successfully");
+        return updateOrderObject;
+    }
+    @Override
+    public Page<SearchOrderObjectByDate> searchDateByDate(SearchOrderObjectByDate searchOrderObjectByDate, Pageable pageable) throws ParseException {
+        String start = searchOrderObjectByDate.getStartDate();
+        String end = searchOrderObjectByDate.getEndDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDateTime = dateFormat.parse(start);
+        Date endDateTime = dateFormat.parse(end);
+
+        Page<OrderSummary> orderSummaryPage = orderSummaryRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
+        List<OrderSummary> orderSummaryList = orderSummaryPage.getContent();
+        List<SearchOrderObjectByDate> searchResultList = new ArrayList<>();
+
+        for (OrderSummary orderSummary : orderSummaryList) {
+            if (searchOrderObjectByDate.getPaymentStatus() != null) {
+                if (orderSummary.getPaymentStatus().equals(searchOrderObjectByDate.getPaymentStatus())) { // Filter by order status
+                    SearchOrderObjectByDate data = new SearchOrderObjectByDate();
+                    data.setPaymentStatus(orderSummary.getPaymentStatus());
+                    data.setRefundStatus(orderSummary.getRefundStatus());
+                    data.setPaymentAmount(orderSummary.getTotalPrice());
+                    data.setDateAndTime(String.valueOf(orderSummary.getCreatedAt()));
+                    data.setOrderId(orderSummary.getId());
+                    searchResultList.add(data);
+                }
+            } else {
+                SearchOrderObjectByDate data = new SearchOrderObjectByDate();
+                data.setPaymentStatus(orderSummary.getPaymentStatus());
+                data.setRefundStatus(orderSummary.getRefundStatus());
+                data.setPaymentAmount(orderSummary.getTotalPrice());
+                data.setDateAndTime(String.valueOf(orderSummary.getCreatedAt()));
+                data.setOrderId(orderSummary.getId());
+                searchResultList.add(data);
+            }
+
+        }
+        return new PageImpl<>(searchResultList, pageable, orderSummaryPage.getTotalElements());
+
+    }
+    }
+
+
+
