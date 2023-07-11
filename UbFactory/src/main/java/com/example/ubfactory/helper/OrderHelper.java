@@ -92,11 +92,13 @@ public class OrderHelper {
 //        orderResponseObject.setEntity(responseObject.getEntity());
         return orderResponseObject;
     }
-    public void sendOrderDetailsEmail(Customer customer, String recipientEmail, List<ItemDetails> itemDetailsList, BigDecimal totalAmount)
+    public void sendOrderDetailsEmail(Customer customer, List<String> recipientEmail, List<ItemDetails> itemDetailsList, BigDecimal totalAmount)
     {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(recipientEmail);
+        recipientEmail.stream().forEach((e) ->{
+           message.setTo(e);
+        });
         message.setSubject("Order Confirmation - Order Details");
 
         StringBuilder emailContent = new StringBuilder();
@@ -118,7 +120,7 @@ public class OrderHelper {
         emailContent.append("Total Amount: $").append(totalAmount).append("\n\n");
         emailContent.append("Thank you for choosing our service. If you have any further questions or concerns, please feel free to contact our customer support team.\n\n");
         emailContent.append("Best regards,\n");
-        emailContent.append("Your Company Name");
+        emailContent.append("Your Company Name" );
 
         message.setText(emailContent.toString());
 

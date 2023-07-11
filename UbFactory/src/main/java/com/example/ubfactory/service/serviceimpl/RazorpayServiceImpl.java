@@ -221,6 +221,7 @@ public class RazorpayServiceImpl implements RazorpayService {
                 historyItem.setPaymentStatus(orderSummary1.getPaymentStatus());
                 historyItem.setOrderStatus(orderSummary1.getOrderStatus());
                 historyItem.setOrderAmount(orderSummary1.getTotalPrice());
+                historyItem.setCreatedAt(orderSummary1.getCreatedAt());
                 historyItem.setCustomerId(orderSummary1.getCustomer().getId());
                 historyItem.setOrderId(orderSummary1.getId());
                 // Get product details for each order summary

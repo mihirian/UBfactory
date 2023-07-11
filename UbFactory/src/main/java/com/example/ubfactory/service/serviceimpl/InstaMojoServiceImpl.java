@@ -31,6 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.internet.AddressException;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -68,7 +69,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
     private CustomerRepository customerRepository;
 
     @Override
-    public OrderResponseObject createOrder(OrderRequestObject orderRequestObject) throws BusinessException {
+    public OrderResponseObject createOrder(OrderRequestObject orderRequestObject) throws BusinessException, AddressException {
         Cart cart = orderVaildator.validateOrderRequest(orderRequestObject);
         List<CartItem> cartItem = cartItemRepository.findAllByCart(cart);
         AtomicReference<BigDecimal> totalPrice = new AtomicReference<BigDecimal>(new BigDecimal(0.00));
@@ -91,7 +92,7 @@ public class InstaMojoServiceImpl implements InstaMojoService {
         PaymentSummary paymentSummary = paymentHelper.createPaymentSummary(orderSummary);
         int amount = paymentSummary.getAmount().multiply(new BigDecimal(100)).intValue();
         String paymentMode = orderRequestObject.getPaymentMode();
-        if (!paymentMode.equalsIgnoreCase("Cash on delivery")) {
+        if (!paymentMode.equalsIgnoreCase("COD")) {
             ApiContext context = ApiContext.create("test_MbsW2GTepwF7plQ9ZdhWX7NfBupRAB61Fyx", "test_LaA6mltdHvwRyDJCdrMXIsQIGIgWrr7GRqUGGiD7qBE9emkeL5KBqGGBneGBILQnuXf1MIYuiQoNpGhQbMUXo90XNmV6ubcnh4F2gf8Do9omeIBqrpwLxX5fnTL", ApiContext.Mode.TEST);
             Instamojo api = new InstamojoImpl(context);
             PaymentOrder order = new PaymentOrder();
@@ -142,9 +143,14 @@ public class InstaMojoServiceImpl implements InstaMojoService {
             return orderResponseObject;
         } else {
             OrderResponseObject orderResponseObject = orderHelper.getOrderResponseCashOnDelevery(cartItem, orderSummary);
+            orderHelper.postCreateOrder(orderSummary);
+            paymentSummary.setPaymentStatus(Status.PENDING.getStatus());
+            paymentRepository.save(paymentSummary);
 //            String mail=(customer.getEmail());
-            String mail = "mihirvermamihir98@gmail.com";
-
+//            String mail = "mihirvermamihir98@gmail.com";
+             List<String> sendMail = new ArrayList<>();
+             sendMail.add(customer.getEmail());
+             sendMail.add("mihirvermamihir98@gmail.com // admin mail id");
             // Share the quantity of items and total amount
             List<ItemDetails> itemDetailsList = new ArrayList<>();
             cartItem.forEach((ele) -> {
@@ -156,9 +162,11 @@ public class InstaMojoServiceImpl implements InstaMojoService {
 
             orderResponseObject.setItemDetail(itemDetailsList.toString());
             orderResponseObject.setAmount(totalPrice.get().intValue());
+            orderResponseObject.setOrderId(orderSummary.getId().toString());
+            orderResponseObject.setCreated_at(orderSummary.getCreatedAt().toString());
 
             // Send the email
-            orderHelper.sendOrderDetailsEmail(customer, mail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
+            orderHelper.sendOrderDetailsEmail(customer, sendMail, itemDetailsList, BigDecimal.valueOf(orderResponseObject.getAmount()));
 
             return orderResponseObject;
         }

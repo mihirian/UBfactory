@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/rating")
 public class RatingController {
     public static final Logger logger = LoggerFactory.getLogger(RatingController.class);

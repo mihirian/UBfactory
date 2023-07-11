@@ -27,7 +27,7 @@ public class RatingHelper {
             double averageRating = (double) totalPoints / totalRatings;
             return averageRating;
         } else {
-            return 0; // or any other default value when there are no ratings
+            return 3; // or any other default value when there are no ratings
         }
     }
 
